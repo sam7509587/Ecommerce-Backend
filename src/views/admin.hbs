@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{!-- <meta charset="UTF-8"> --}}
+  {{!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --}}
+  {{!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> --}}
+  <title>DashBoard</title>
+  <link rel="stylesheet" href="/./stylesheets/style.css">
+</head>
+<body>
+  <div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+    <h2 class="active"> Admin </h2>
+
+<h5 style="color: skyblue;">Select the option to see data !!!!!</h5>
+     <form action="/api/v1/admin/auth/getsellers?token={{accessToken}}" method="post">
+ <input type="submit" value="Show Seller"></form>
+  <form action="/api/v1/admin/auth/getproducts?token ={{accessToken}}" method="get">
+ <input type="submit" value="Show Products"></form>
+</div>
+  </div>
+</div>
+</body>
+</html>

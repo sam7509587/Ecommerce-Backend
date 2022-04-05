@@ -1,3 +1,1 @@
-exports.loginHbs = (req,res)=>{
-    
-}
+exports.loginHbs = (req, res) => {};

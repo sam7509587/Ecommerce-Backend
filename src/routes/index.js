@@ -1,5 +1,6 @@
-const userRouter = require("./userRouter")
-const sellerRouter = require("./sellerRoutes")
-const adminRouter = require("./adminRoutes")
-const hbsRoute = require("./hbsRoute")
-module.exports = {userRouter,sellerRouter,adminRouter,hbsRoute}
+const userRouter = require('./userRouter');
+const sellerRouter = require('./sellerRoutes');
+const adminRouter = require('./adminRoutes');
+const addressRouter = require('./addressRoutes');
+const productRouter = require("./productRoutes")
+module.exports = { userRouter, sellerRouter, adminRouter, addressRouter ,productRouter};
