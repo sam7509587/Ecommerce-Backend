@@ -1,4 +1,4 @@
-const { User, catagoryModel, brandModel } = require('../models');
+const { User, category, brand } = require('../models');
 const { validAdmin, validSeller } = require('../validations');
 const { createUser } = require('../services');
 const {
@@ -9,14 +9,14 @@ const {
   sortByField,
 } = require('../utlilities');
 const jwt = require('jsonwebtoken');
-const { SECRET_KEY, A1, S1, ApiError } = require('../config/index');
+const { SECRET_KEY, ADMIN, SELLER, ApiError } = require('../config/index');
 const async = require('hbs/lib/async');
 
 exports.showSeller = async (req, res) => {
   var { page = 1, limit = 5 } = req.query;
   const fields = fieldsToShow(req);
   //    const sort = sortByField(req)
-  const sellers = await User.find({ role: S1 }, fields)
+  const sellers = await User.find({ role: SELLER }, fields)
     .limit(limit)
     .skip((page - 1) * limit)
     .sort({ createdAt: -1 });
@@ -69,7 +69,7 @@ exports.approveSeller = async (req, res,next) => {
 };
 
 exports.loginAdmin = async (req, res, next) => {
-  const adminPresent = await User.findOne({ role: A1 });
+  const adminPresent = await User.findOne({ role: ADMIN });
   if (adminPresent === null) {
     const validUser = await validAdmin(req);
     if (validUser.error) {
@@ -103,7 +103,7 @@ exports.enterAdmin = async (req, res, next) => {
   if (
     admin != null &&
     admin.password === req.body.password &&
-    admin.role === A1
+    admin.role === ADMIN
   ) {
     const payload = {
       uad: admin._id,
@@ -121,14 +121,14 @@ exports.enterAdmin = async (req, res, next) => {
 };
 
 exports.addCategory = async (req, res, next) => {
-  const category = req.body.category;
-  if (!category)
-    return next(new ApiError(404, "no category found"))
-  const namePresent = await catagoryModel.findOne({ category: req.body.category })
+  const categoryName = req.body.categoryName;
+  if (!categoryName)
+    return next(new ApiError(404, "categoryName is required"))
+  const namePresent = await category.findOne({ categoryName: categoryName })
   if (namePresent) {
-    return next(new ApiError(409, "category name already present"))
+    return next(new ApiError(409, "categoryName already present"))
   }
-  const data= await catagoryModel.create({ category: req.body.category })
+  const data= await category.create({ categoryName: categoryName })
   res.status(201).json({
     status: 201,
     message: "category has been added",
@@ -137,18 +137,19 @@ exports.addCategory = async (req, res, next) => {
   })
 }
 exports.addBrand = async (req, res, next) => {
-  const brand = req.body.brand;
-  if (!brand)
-    return next(new ApiError(404, "no name found"))
-  const namePresent = await brandModel.findOne({ brand: req.body.brand })
+  const brandName = req.body.brandName;
+  if (!brandName)
+    return next(new ApiError(404, "brandName is required"))
+  const namePresent = await brand.findOne({brandName :brandName})
   if (namePresent) {
     return next(new ApiError(409, "brand name already present"))
   }
-  data  = await brandModel.create({ brand: req.body.brand })
+  else{
+  data  = await brand.create({brandName :brandName})
   res.status(201).json({
     status: 201,
     message: "brand has been added",
     data,
     success: false
-  })
+  })}
 }

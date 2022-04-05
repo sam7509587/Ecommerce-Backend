@@ -1,5 +1,5 @@
 const express = require('express');
-const { USER_ROLE } = require('../config');
+const { USER } = require('../config');
 const router = express.Router();
 const { registerUser, loginUser,editUser } = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
@@ -185,7 +185,7 @@ router.post('/verifyuserotp', verifyOtp);
  *         description: Some server error
  */
 
-router.post("/auth/editprofile",tokenVerify,checkRole(USER_ROLE),editUser)
+router.post("/auth/editprofile",tokenVerify,checkRole(USER),editUser)
 
 // router.post("/image",/*uploads.single('image')*/uploadProfileImg)
 module.exports = router;

@@ -1,7 +1,7 @@
 const mongoose =require("mongoose")
 
 const catagory = mongoose.Schema({
-    category : String,
+    categoryName : String,
     description : String,
     image:String,
     isActive: Boolean
@@ -14,5 +14,5 @@ catagory.set('toJSON', {
       delete ret._id;
     },
   });
-const catagoryModel= mongoose.model("catagoryModel",catagory)
-module.exports = catagoryModel
+const category= mongoose.model("category",catagory)
+module.exports = category

@@ -1,5 +1,5 @@
 const express = require('express');
-const { S1 } = require('../config');
+const { SELLER } = require('../config');
 const router = express.Router();
 
 const { login, registerSelller } = require('../controller');
@@ -167,5 +167,5 @@ router.post('/verifyotp', verifyOtp);
  *       500:
  *         description: Some server error
  */
-router.post("/auth/editprofile",tokenVerify,checkRole(S1),editSellerProfile)
+router.post("/auth/editprofile",tokenVerify,checkRole(SELLER),editSellerProfile)
 module.exports = router;

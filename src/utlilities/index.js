@@ -6,14 +6,14 @@ const {
   generateOtp,
   checkExp,
   verifyEmail,
-  uploadPhoto,deletePhoto
+  uploadPhoto,EditPhoto
 } = require('./main');
 const { adminData, fieldsToShow, sortByField } = require('./adminUtility');
 const { sellerData } = require('./sellerUtility');
 const { UserData } = require('./userUtility');
 const { addressPresent } = require('./addessUtility');
-const { checkCategoryBrand,brandCateEdit,EditPhoto,productField} = require('./productUtility');
-module.exports = {deletePhoto,
+const { checkCategoryBrand,brandCateEdit,productField} = require('./productUtility');
+module.exports = {
   checkCategoryBrand,
   userPresent,
   sendOtp,

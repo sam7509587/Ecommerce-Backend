@@ -1,4 +1,4 @@
-const { ApiError, S1 } = require('../config');
+const { ApiError, SELLER } = require('../config');
 const { valid } = require('../validations');
 const { createUser, userLogin, userPhoneLogin } = require('../services');
 const {
@@ -20,7 +20,7 @@ const emailLog = async (req, res) => {
         success: false,
       });
     } else {
-      if (userAvailable.role === S1) {
+      if (userAvailable.role === SELLER) {
         req.body.fullName= userAvailable.fullName
         await userLogin(req, res, userAvailable);
       } else {
@@ -47,7 +47,7 @@ const phoneLog = async (req, res) => {
       success: false,
     });
   } else {
-    if (userAvailable.role === S1) {
+    if (userAvailable.role === SELLER) {
       await userLogin(req, res, userAvailable);
     } else {
       res.status(401).json({

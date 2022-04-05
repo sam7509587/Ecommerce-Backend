@@ -19,38 +19,8 @@ const port = 8000 || PORT;
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const bodyParser = require('body-parser');
-const option = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'E-commerse Api',
-      version: '^1.0.0',
-      description: 'a simple Ecommerce Project Apis',
-    },
-    components: {
-      securitySchemes: {
-        jwt: {
-          type: 'http',
-          scheme: 'bearer',
-          in: 'header',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    security: [
-      {
-        jwt: [],
-      },
-    ],
-    servers: [
-      {
-        url: 'http://127.0.0.1:8000',
-      },
-    ],
-  },
-  apis: [`${__dirname}/routes/*.js`],
-};
-const specs = swaggerJsDoc(option);
+const {swaggerOptions}=require("./config")
+const specs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 app.set('views', path.join(__dirname, '/views'));
@@ -58,7 +28,7 @@ app.set('view engine', 'hbs');
 
 
 app.use(cors());
-app.use(express());
+app.use(express.json());
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());

@@ -1,5 +1,5 @@
 const express = require('express');
-const { A1 } = require('../config');
+const { ADMIN } = require('../config');
 const router = express.Router();
 
 const { showSeller, approveSeller, loginAdmin ,addCategory,addBrand} = require('../controller');
@@ -71,7 +71,7 @@ router.post('/loginAdmin', loginAdmin);
  *          404:
  *              description : seller doesnt found
  */
-router.post('/auth/getsellers',tokenVerify,checkRole(A1),showSeller);
+router.post('/auth/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
 
 /**
  * @swagger
@@ -98,7 +98,7 @@ router.post('/auth/getsellers',tokenVerify,checkRole(A1),showSeller);
  *       500:
  *         description: Some server error
  */
-router.post('/auth/approve',tokenVerify,checkRole(A1), approveSeller);
+router.post('/auth/approve',tokenVerify,checkRole(ADMIN), approveSeller);
 
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.post('/auth/approve',tokenVerify,checkRole(A1), approveSeller);
  *       500:
  *         description: Some server error
  */
-router.post("/auth/addcategory",tokenVerify,checkRole(A1),addCategory)
+router.post("/auth/addcategory",tokenVerify,checkRole(ADMIN),addCategory)
 
 /**
  * @swagger
@@ -152,5 +152,5 @@ router.post("/auth/addcategory",tokenVerify,checkRole(A1),addCategory)
  *       500:
  *         description: Some server error
  */
- router.post("/auth/addbrand",tokenVerify,checkRole(A1),addBrand)
+ router.post("/auth/addbrand",tokenVerify,checkRole(ADMIN),addBrand)
 module.exports = router;

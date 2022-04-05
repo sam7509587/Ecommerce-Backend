@@ -1,6 +1,6 @@
 const mongoose =require("mongoose")
 const brandSchema = mongoose.Schema({
-    brand : String,
+    brandName : String,
     description : String,
     image:String,
     isActive: Boolean
@@ -13,5 +13,5 @@ brandSchema.set('toJSON', {
       delete ret._id;
     },
   });
-const brandModel= mongoose.model("brandModel",brandSchema)
-module.exports = brandModel
+const brand= mongoose.model("brand",brandSchema)
+module.exports = brand

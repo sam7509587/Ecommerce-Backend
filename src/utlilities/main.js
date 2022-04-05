@@ -1,4 +1,4 @@
-const { User, productModel } = require('../models');
+const { User, product, image } = require('../models');
 const {template}= require("../mailTemp/mailTemplete")
 const {
   PHONE,
@@ -7,13 +7,23 @@ const {
   USER_MAIL,
   USER_PASSWORD,
   PORT,
-  S1,
+  SELLER,
   ApiError,
+  CLOUD_NAME,
+  API_KEY,
+  API_SECRET,
+  
 } = require('../config');
+const cloudinary = require("cloudinary");
 const twilio = require('twilio');
 const nodemailer = require('nodemailer');
-const multer = require("multer")
 const path =require("path");
+cloudinary.config({
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET,
+  secure: true
+});
 exports.userPresent = async (req) => {
   try {
     if (req.body.phoneNumber != undefined && req.body.email != undefined) {
@@ -60,7 +70,7 @@ exports.sendOtp = async (req, otp, msg) => {
   }
 };
 
-exports.sendMail = async (req, token = undefined, msg, role = S1) => {
+exports.sendMail = async (req, token = undefined, msg, role = SELLER) => {
   const fullName = req.body.fullName
   const passedMsg = msg
   const greeting = "Hello"
@@ -139,42 +149,43 @@ exports.verifyEmail = (req) => {
   }
   return false;
 };
-const imagePath = path.join(__dirname, "/../../uploads");
-const storage = multer.diskStorage({
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + file.fieldname + path.extname(file.originalname));
-  },
-});
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+exports.uploadPhoto=async(req,folder="home",next)=>{
+  const imageData =[]
+  for (i of req.files){
+    let filePath = (i["destination"] + "/" + i["filename"]);
+    const uploadedFile = await cloudinary.uploader.upload(filePath, function (result, error) {
+      if (result) {
+        let obj = {imageUrl:result.url,
+          publicId:result.public_id}
+          imageData.push(obj)
+      }else{
+        return next(new ApiError(500, `${error.name} - ${error.message}`));
+        
+      }
+      req.uplodedFiles=imageData;
+      return imageData
+    }, {
+      folder: `${folder}`,
+      use_filename: true
+    });
+  }      
+}
+exports.EditPhoto=async(req,folder,next)=>{
+  try{
+  const imagesPresent = await image.findOne({productId:req.product})
+  if(!imagesPresent){
+
+  }else{
+    for (file of imagesPresent.images){
+      await cloudinary.uploader.destroy(file.publicId, function(result) { 
+        if(result.result=="ok"){
+          
+        }else{
+         return next(new ApiError(400,result.result))
+        }
+      });
     }
+  }}catch(err){
+    return next(new ApiError(400, err.message))
   }
-}).single("photo");
-
-exports.uploadPhoto=async(req,res,next)=>{
-  upload(req, res, async (err) => {
-    req.data = req.body
-    req.file = req.file
-    if (err) {
-      return next(new ApiError(404,`${err.name} - ${err.message}`))
-    }
-    next()
-})};
-
-exports.deletePhoto=async(req,res,next)=>{
-  const user = req.user;
-  upload(req, res, async (err) => {
-    req.data = req.body
-    req.file = req.file
-    if (err) {
-      return next(new ApiError(404,`${err.name} - ${err.message}`))
-    }
-    next()
-})
 }

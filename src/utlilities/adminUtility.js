@@ -1,9 +1,8 @@
-const { A1 } = require('../config');
-
+const { ADMIN } = require('../config');
 exports.adminData = (req) => {
   req.body.isVerified = true;
   req.body.isApproved = true;
-  req.body.role = A1;
+  req.body.role = ADMIN;
   return req.body;
 };
 

@@ -1,9 +1,9 @@
 const mongoose =require("mongoose")
 
 const photoSchema = mongoose.Schema({
-  imageOf: String,
-    imageUrl:String,
-    publicId : String
+  productId: {type:mongoose.Schema.Types.ObjectId,ref:"product"},
+    images:[{imageUrl:String,
+    publicId : String}]
 }, { timestamps: true })
 
 photoSchema.set('toJSON', {
@@ -13,5 +13,5 @@ photoSchema.set('toJSON', {
       delete ret._id;
     },
   });
-const imageModel= mongoose.model("imageModel",photoSchema)
-module.exports = imageModel
+const image= mongoose.model("image",photoSchema)
+module.exports = image

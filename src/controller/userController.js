@@ -1,6 +1,6 @@
-const async = require('hbs/lib/async');
+
 const { valid, validUserProfile } = require('../validations');
-const { USER,ApiError, USER_ROLE } = require('../config');
+const { USER,ApiError } = require('../config');
 const { createUser, userLogin, updateBody } = require('../services');
 const {
   userPresent,

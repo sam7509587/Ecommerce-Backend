@@ -1,10 +1,10 @@
 const User = require('./userModel');
 const userAddress = require('./addressModel');
 const sellerProfile = require('./sellerProfile');
-const productModel = require('./productmodel');
-const brandModel = require('./brandmodel');
-const catagoryModel = require('./catagorymodel');
-const imageModel = require('./imagemodel');
+const product = require('./productmodel');
+const brand = require('./brandmodel');
+const category = require('./catagorymodel');
+const image = require('./imagemodel');
 
 
-module.exports = {User, userAddress ,sellerProfile,productModel,brandModel,catagoryModel,imageModel};
+module.exports = {User, userAddress ,sellerProfile,product,brand,category,image};

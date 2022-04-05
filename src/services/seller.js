@@ -8,6 +8,7 @@ exports.createUser = async (req) => {
     const newUser = await User.create(req);
     return newUser;
   } catch (err) {
+    console.log(err)
     return err;
   }
 };
