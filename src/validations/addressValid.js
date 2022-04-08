@@ -2,12 +2,12 @@ const joi = require('joi');
 
 exports.validAddress = async (req) => {
   const data = joi.object({
-    country: joi.string().min(2).max(30),
-    state: joi.string().min(2).max(30),
-    city: joi.string().lowercase(),
-    street: joi.string(),
-    houseNo: joi.string(),
-    pinCode: joi.number().required(),
+    country: joi.string().min(2).max(30).trim(),
+    state: joi.string().min(2).max(30).trim(),
+    city: joi.string().lowercase().trim(),
+    street: joi.string().trim(),
+    houseNo: joi.string().trim(),
+    pinCode: joi.number().required().trim(),
     phoneNumber: joi
       .string()
       .required()

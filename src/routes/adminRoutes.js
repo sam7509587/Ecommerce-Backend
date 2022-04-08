@@ -2,7 +2,7 @@ const express = require('express');
 const { ADMIN } = require('../config');
 const router = express.Router();
 
-const { showSeller, approveSeller, loginAdmin ,addCategory,addBrand} = require('../controller');
+const { showSeller, approveSeller, loginAdmin ,addCategory} = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
 
@@ -100,57 +100,4 @@ router.post('/auth/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
  */
 router.post('/auth/approve',tokenVerify,checkRole(ADMIN), approveSeller);
 
-/**
- * @swagger
- * /api/v1/admin/addcategory:
- *   post:
- *     summary: add catagory admin
- *     tags: [Ctaegory]
- *     requestBody:
- *       required:
- *       content:
- *         application/json:
- *           schema:
- *              type: object
- *              required :
- *                  - name
- *              properties:
- *                  name:
- *                      type: string
- *              example:
- *                  name: "clothing"
- *     responses:
- *       200:
- *         description: catagory added
- *       500:
- *         description: Some server error
- */
-router.post("/auth/addcategory",tokenVerify,checkRole(ADMIN),addCategory)
-
-/**
- * @swagger
- * /api/v1/admin/addbrand:
- *   post:
- *     summary: add brand admin
- *     tags: [Brand]
- *     requestBody:
- *       required:
- *       content:
- *         application/json:
- *           schema:
- *              type: object
- *              required :
- *                  - name
- *              properties:
- *                  name:
- *                      type: string
- *              example:
- *                  name: "clothing"
- *     responses:
- *       200:
- *         description: catagory added
- *       500:
- *         description: Some server error
- */
- router.post("/auth/addbrand",tokenVerify,checkRole(ADMIN),addBrand)
 module.exports = router;

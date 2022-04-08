@@ -5,7 +5,6 @@ const { registerUser, loginUser,editUser } = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
 const { verifyToken, verifyOtp } = require('../services');
-const { uploadProfileImg } = require('../utlilities/userUtility');
 
 /**
  * @swagger

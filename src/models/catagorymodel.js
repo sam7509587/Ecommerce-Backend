@@ -4,7 +4,7 @@ const catagory = mongoose.Schema({
     categoryName : String,
     description : String,
     image:String,
-    isActive: Boolean
+    isActive: {type: Boolean,default:true}
 }, { timestamps: true })
 
 catagory.set('toJSON', {

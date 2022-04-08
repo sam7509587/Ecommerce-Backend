@@ -22,6 +22,6 @@ produceSchema.set('toJSON', {
       delete ret._id;
     },
   });
-  
+  produceSchema.index({'$**': 'text'});  
 const product= mongoose.model("product",produceSchema)
 module.exports = product

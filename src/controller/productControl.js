@@ -6,7 +6,6 @@ const { checkBrandCategory, brandCateEdit } = require('../utlilities/productUtil
 
 exports.addProduct = async (req, res, next) => {
   try {
-    console.log("88888888888888888888888888888",req.body,req.file,req)
     await checkBrandCategory(req, res, next)
     if (req.files) {
       if (req.files.length > 0) {
@@ -51,16 +50,16 @@ exports.showProductSeller = async (req, res, next) => {
   try {
     const { page = 1, limit = 5 } = req.query;
     const fields = productField(req, res, next)
-    const filter = filters(req, res, next)
-    const products = await product.find(filter, fields).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
+    // const filter = filters(req, res, next)
+    const data = await product.find({$text:{$search: req.body.filter}},fields).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
       .populate("categoryId", "categoryId")
       .populate("brandId", "brandId")
       .populate("createdBy", "fullName")
       .populate("image", "_id images.imageUrl")
     res.status(200).json({
       status: 200,
-      totalProducts: products.length,
-      products,
+      totalProducts: data.length,
+      data,
       success: true
     })
   } catch (err) {
@@ -88,7 +87,7 @@ exports.editProduct = async (req, res, next) => {
       if (req.files.length > 0) {
         if (!req.product.image) {
           await uploadPhoto(req, next, "products")
-          const imageData = { peoductId: req.product.id, images:req.uplodedFiles }
+          const imageData = { productId: req.product.id, images:req.uplodedFiles }
           const savedImages = await image.create(imageData)
           req.body.image = savedImages.id
         }
@@ -141,9 +140,9 @@ exports.deleteProduct = async (req, res, next) => {
       const imageData = await image.findOne({ createdBy: req.params.id })
       await deletePhoto(req, next, imageData)
       imageData.remove();
-      deletedProduct.isActive = "false";
+      deletedProduct.isActive = false;
+      deletedProduct.image = undefined
       deletedProduct.save()
-      // await image.deleteOne({productId:req.params.id})
     } else {
       deletedProduct.isActive = "false";
       deletedProduct.save()
@@ -163,7 +162,6 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.showProduct = async (req, res, next) => {
   try {
-    console.log(req.params.id)
     const fields = productField(req)
     const products = await product.findOne({ _id: req.params.id, isActive: true }, fields)
       .populate("image", "images.imageUrl")

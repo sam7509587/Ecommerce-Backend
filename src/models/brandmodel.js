@@ -2,8 +2,8 @@ const mongoose =require("mongoose")
 const brandSchema = mongoose.Schema({
     brandName : String,
     description : String,
-    image:String,
-    isActive: Boolean
+    image:{type: mongoose.Schema.Types.ObjectId , ref: "image"},
+    isActive: {type: Boolean,default:true}
 }, { timestamps: true })
 
 brandSchema.set('toJSON', {

@@ -3,10 +3,17 @@ const { ApiError, SECRET_KEY } = require("../config");
 const { User } = require("../models");
 exports.tokenVerify = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) {
-      return next(new ApiError(404, "no token found"))
+    
+    let token;
+    if (req.cookies.access_token) {
+      token = req.cookies.access_token;
+      // return next(new ApiError(404, "no token found"))
+    }else if(req.headers.authorization){
+      token = req.headers.authorization.split(' ')[1] 
     }
-      const token = req.headers.authorization.split(' ')[1];
+    else{
+      return next(new ApiError(404, "no token found")) 
+    }
       const user = await jwt.verify(token, SECRET_KEY, async (err, info) => {
         if (info) {
           const user = await User.findOne({ _id: info.uad });
@@ -22,7 +29,6 @@ exports.tokenVerify = async (req, res, next) => {
       return user;
   }
   catch (err) {
-
-    return err;
+    next(new ApiError(400,err.message))
   }
 };

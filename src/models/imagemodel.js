@@ -4,7 +4,9 @@ const photoSchema = mongoose.Schema({
   productId: {type:mongoose.Schema.Types.ObjectId,ref:"product"},
     images:[{imageUrl:String,
     publicId : String}],
-    isActive : {type : Boolean , default : true}
+    isActive : {type : Boolean , default : true},
+    brandId:{type:mongoose.Schema.Types.ObjectId,ref:"brand"},
+    categoryId:{type:mongoose.Schema.Types.ObjectId,ref:"category"}
 }, { timestamps: true })
 
 photoSchema.set('toJSON', {

@@ -119,37 +119,3 @@ exports.enterAdmin = async (req, res, next) => {
     return next(ApiError.Unauthorised('invalid email or password'));
   }
 };
-
-exports.addCategory = async (req, res, next) => {
-  const categoryName = req.body.categoryName;
-  if (!categoryName)
-    return next(new ApiError(404, "categoryName is required"))
-  const namePresent = await category.findOne({ categoryName: categoryName })
-  if (namePresent) {
-    return next(new ApiError(409, "categoryName already present"))
-  }
-  const data= await category.create({ categoryName: categoryName })
-  res.status(201).json({
-    status: 201,
-    message: "category has been added",
-    data,
-    success: false
-  })
-}
-exports.addBrand = async (req, res, next) => {
-  const brandName = req.body.brandName;
-  if (!brandName)
-    return next(new ApiError(404, "brandName is required"))
-  const namePresent = await brand.findOne({brandName :brandName})
-  if (namePresent) {
-    return next(new ApiError(409, "brand name already present"))
-  }
-  else{
-  data  = await brand.create({brandName :brandName})
-  res.status(201).json({
-    status: 201,
-    message: "brand has been added",
-    data,
-    success: false
-  })}
-}

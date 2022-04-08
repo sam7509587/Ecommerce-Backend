@@ -37,13 +37,13 @@ exports.checkBrandCategory=async(req,res,next)=>{
   if(!categoryId){
   return  next(new ApiError(404,"category id is required"))
   }
-  const categoryPresent = await category.findOne({_id:categoryId});
+  const categoryPresent = await category.findOne({_id:categoryId,isActive:true});
   if(!categoryPresent){
-    return  next(new ApiError(404,"category id is invalid"))
+    return  next(new ApiError(404,"categoryId is invalid"))
   }
   const brandPresent = await brand.findOne({_id:brandId});
   if(!brandPresent){
-    return  next(new ApiError(404,"category id is invalid"))
+    return  next(new ApiError(404,"brandId is invalid"))
   }
 }
 

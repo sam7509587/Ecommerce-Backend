@@ -4,16 +4,15 @@ const { ApiError } = require('../config');
 
 exports.validProduct = async (req,res,next) => {
   const data = joi.object({
-    productName	:joi.string().lowercase().required().min(2).max(15),
-    categoryId	:joi.string().required().lowercase(),
-    brandId: joi.string().lowercase().required(),
-    price	:joi.number().required(),
-    image:	joi.string(),
+    productName	:joi.string().lowercase().required().min(2).max(15).trim(),
+    categoryId	:joi.string().required().lowercase().trim(),
+    brandId: joi.string().lowercase().required().trim(),
+    price	:joi.number().required().trim(),
     isAvailable	:joi.boolean,
     rating	:joi.number(),
-    quantity:joi.number(),
-    publicId:joi.string().lowercase(),
-    description	:joi.string().lowercase().min(5).max(150),
+    quantity:joi.number().trim(),
+    publicId:joi.string().lowercase().trim(),
+    description	:joi.string().lowercase().min(5).max(150).trim(),
   })
   const validData = await data.validate(req.body);
   if(validData.error){
@@ -25,16 +24,41 @@ exports.validProduct = async (req,res,next) => {
 }
 exports.validEntry = async(req,res,next)=>{
   const data = joi.object({
-    productName	:joi.string().lowercase().min(2).max(15),
-    categoryId	:joi.string().lowercase(),
-    brandId: joi.string().lowercase(),
-    price	:joi.number(),
-    image:	joi.string(),
-    isAvailable	:joi.boolean,
-    rating	:joi.number(),
-    quantity:joi.string(),
-    description	:joi.string().lowercase().max(150).min(5),
-    publicId:joi.string().lowercase(),
+    productName	:joi.string().lowercase().min(2).max(15).trim(),
+    categoryId	:joi.string().lowercase().trim(),
+    brandId: joi.string().lowercase().trim(),
+    price	:joi.number().trim(),
+    isAvailable	:joi.boolean.trim(),
+    quantity:joi.number().trim(),
+    description	:joi.string().lowercase().max(150).min(5).trim(),
+  })
+  const validData = await data.validate(req.body);
+  if(validData.error){
+    next(new ApiError(400,validData.error.details[0].message))
+  }else{
+    next()
+  }
+  return validData
+}
+
+exports.validBrand = async(req,res,next)=>{
+  const data = joi.object({
+    brandName	:joi.string().lowercase().min(2).max(15).trim(),
+    description	:joi.string().lowercase().max(150).min(5).trim(),
+  })
+  const validData = await data.validate(req.body);
+  if(validData.error){
+    next(new ApiError(400,validData.error.details[0].message))
+  }else{
+    next()
+  }
+  return validData
+}
+
+exports.validCategory = async(req,res,next)=>{
+  const data = joi.object({
+    categoryName	:joi.string().lowercase().min(2).max(15).trim(),
+    description	:joi.string().lowercase().max(150).min(5).trim(),
   })
   const validData = await data.validate(req.body);
   if(validData.error){

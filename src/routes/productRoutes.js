@@ -1,5 +1,5 @@
 const express = require('express');
-const { SELLER } = require('../config');
+const { SELLER, ADMIN } = require('../config');
 const router = express.Router();
 const { addProduct ,showProductSeller,editProduct,deleteProduct,showProduct,deleteSinglePhoto} = require('../controller');
 const { checkRole,tokenVerify, formData } = require('../middleware');
@@ -32,7 +32,7 @@ const { validProduct, validEntry } = require('../validations');
  *                      type : number
  *                  description :
  *                      type : string
- *                  file :
+ *                  image :
  *                      type: string
  *                      format: binary     
  *              example :
@@ -57,15 +57,9 @@ const { validProduct, validEntry } = require('../validations');
  *   post:
  *     summary: add new product 
  *     tags: [Products]   
- *     parameters :
- *          - in : formData   
- *            name: image
- *            schema: 
- *              type: file   
  *     requestBody:
- *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/product'
  *     responses:
@@ -75,7 +69,7 @@ const { validProduct, validEntry } = require('../validations');
  *          404:
  *              description : data doesnt found
  */
-router.post("/",tokenVerify,checkRole(SELLER),formData,validProduct,addProduct)
+router.post("/",tokenVerify,checkRole(SELLER,ADMIN),formData,validProduct,addProduct)
 /**
  * @swagger
  * /api/v1/product:
@@ -102,7 +96,7 @@ router.post("/",tokenVerify,checkRole(SELLER),formData,validProduct,addProduct)
  *          200:
  *              description: this is the list of products
  */
-router.get("/",tokenVerify,checkRole(SELLER),showProductSeller)
+router.get("/",tokenVerify,checkRole(SELLER,ADMIN),formData,showProductSeller)
 /**
  * @swagger
  * /api/v1/product/{id}:
@@ -116,7 +110,6 @@ router.get("/",tokenVerify,checkRole(SELLER),showProductSeller)
  *              type: string
  *              description: enter the id of product you want to see  
  *      requestBody:
- *       required: true
  *       content:
  *         application/json:
  *           schema:
@@ -128,7 +121,7 @@ router.get("/",tokenVerify,checkRole(SELLER),showProductSeller)
  *          404:
  *              description : data doesnt found
  */
-router.put("/:id",tokenVerify,checkRole(SELLER),formData,validEntry,editProduct)
+router.put("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,validEntry,editProduct)
 
 /**
  * @swagger
@@ -149,7 +142,7 @@ router.put("/:id",tokenVerify,checkRole(SELLER),formData,validEntry,editProduct)
  *          404:
  *              description : data doesnt found
  */
-router.get("/:id",tokenVerify,checkRole(SELLER),showProduct)
+router.get("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,showProduct)
 /**
  * @swagger
  * /api/v1/product/{id}:
@@ -157,7 +150,7 @@ router.get("/:id",tokenVerify,checkRole(SELLER),showProduct)
  *      summary: delete product
  *      tags: [Products]
  *      parameters:
- *          - in : params
+ *          - in : path
  *            name: id
  *            schema:
  *              type: string
@@ -169,6 +162,6 @@ router.get("/:id",tokenVerify,checkRole(SELLER),showProduct)
  *          404:
  *              description : data doesnt found
  */
-router.delete("/:id",tokenVerify,checkRole(SELLER),deleteProduct)
+router.delete("/:id",tokenVerify,checkRole(SELLER,ADMIN),deleteProduct)
 // router.delete("/:id",tokenVerify,checkRole(SELLER),deleteSinglePhoto)
 module.exports = router

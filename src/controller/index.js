@@ -1,7 +1,9 @@
 const { login } = require('./mainControl');
 const { registerSelller } = require('./sellerControl');
-const { showSeller, loginAdmin, approveSeller,addBrand,addCategory} = require('./adminControl');
+const { showSeller, loginAdmin, approveSeller} = require('./adminControl');
+const {addBrand,showBrand,editBrands,showAllBrands,deleteBrand} = require("./brandController")
 const { registerUser, loginUser ,editUser} = require('./userController');
+const {editCategorys,showAllCategorys,deleteCategory,showCategory,addCategory}=require("./categoryControl")
 const {
   createAddress,
   editAddress,
@@ -20,9 +22,9 @@ module.exports = {
   loginUser,
   createAddress,
   editAddress,
-  deleteAddress,
+  deleteAddress,editBrands,showAllBrands,deleteBrand,
   showAddress,
   addProduct,
   showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct,showProduct
-  ,deleteSinglePhoto
+  ,deleteSinglePhoto,showBrand,editCategorys,showAllCategorys,deleteCategory,showCategory
 };

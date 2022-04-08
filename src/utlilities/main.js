@@ -174,7 +174,7 @@ exports.deletePhoto=async(req,next,imageData)=>{
   try{
     for (file of imageData.images){
       const public_id =file.publicId
-      await cloudinary.uploader.destroy(public_id, function(result) { 
+      await cloudinary.uploader.destroy(public_id, function(result,err) { 
         if(result.result=="ok"){
           return true
         }else{

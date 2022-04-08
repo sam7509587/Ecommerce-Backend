@@ -21,8 +21,10 @@ exports.userLogin = async (req, res, userLogin) => {
         };
         refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
         accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-        res.status(200).json({
-          message: 'log in successfull',
+        res.status(200).cookie("access_token", accessToken, {
+          httpOnly: true,
+        }).json({
+          message: 'log in successfull and token has been sent',
           refreshToken,
           accessToken,
           status: 200,
