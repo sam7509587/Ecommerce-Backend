@@ -105,7 +105,7 @@ router.post('/auth/approve',tokenVerify,checkRole(ADMIN), approveSeller);
  * /api/v1/admin/addcategory:
  *   post:
  *     summary: add catagory admin
- *     tags: [Admin]
+ *     tags: [Ctaegory]
  *     requestBody:
  *       required:
  *       content:
@@ -132,7 +132,7 @@ router.post("/auth/addcategory",tokenVerify,checkRole(ADMIN),addCategory)
  * /api/v1/admin/addbrand:
  *   post:
  *     summary: add brand admin
- *     tags: [Admin]
+ *     tags: [Brand]
  *     requestBody:
  *       required:
  *       content:

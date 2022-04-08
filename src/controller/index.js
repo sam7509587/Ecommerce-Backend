@@ -9,7 +9,7 @@ const {
   showAddress,
   showCountry,
 } = require('./addressControl');
-const { addProduct,showProductSeller,editProduct,deleteProduct } = require('./productControl');
+const { addProduct,showProductSeller,editProduct,deleteProduct,showProduct ,deleteSinglePhoto} = require('./productControl');
 module.exports = {
   login,
   showSeller,
@@ -23,5 +23,6 @@ module.exports = {
   deleteAddress,
   showAddress,
   addProduct,
-  showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct
+  showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct,showProduct
+  ,deleteSinglePhoto
 };

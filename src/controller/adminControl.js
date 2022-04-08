@@ -20,7 +20,7 @@ exports.showSeller = async (req, res) => {
     .limit(limit)
     .skip((page - 1) * limit)
     .sort({ createdAt: -1 });
-
+    
   res.status(200).json({
     status: 200,
     mesage: ` total data found : ${sellers.length}`,

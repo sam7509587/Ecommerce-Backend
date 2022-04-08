@@ -3,7 +3,8 @@ const mongoose =require("mongoose")
 const photoSchema = mongoose.Schema({
   productId: {type:mongoose.Schema.Types.ObjectId,ref:"product"},
     images:[{imageUrl:String,
-    publicId : String}]
+    publicId : String}],
+    isActive : {type : Boolean , default : true}
 }, { timestamps: true })
 
 photoSchema.set('toJSON', {

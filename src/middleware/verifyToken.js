@@ -3,10 +3,9 @@ const { ApiError, SECRET_KEY } = require("../config");
 const { User } = require("../models");
 exports.tokenVerify = async (req, res, next) => {
   try {
-    if (req.headers.authorization) {
-      if (req.headers.authorization === undefined) {
-        return next(new ApiError(404, "no token found"))
-      }
+    if (!req.headers.authorization) {
+      return next(new ApiError(404, "no token found"))
+    }
       const token = req.headers.authorization.split(' ')[1];
       const user = await jwt.verify(token, SECRET_KEY, async (err, info) => {
         if (info) {
@@ -21,8 +20,6 @@ exports.tokenVerify = async (req, res, next) => {
         }
       });
       return user;
-
-    }
   }
   catch (err) {
 

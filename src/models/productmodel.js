@@ -11,7 +11,7 @@ image:{type: mongoose.Schema.Types.ObjectId , ref: "image"},
 rating	:Number,
 quantity  :{type: Number,default :0},
 description	:String,
-isApproved	:{type: Boolean,default: false},
+isApproved	:{type: Boolean,default: false}
 
 },{timestamps:true})
 

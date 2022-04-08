@@ -27,5 +27,5 @@ exports.swaggerOptions = {
         },
       ],
     },
-    apis: [`${__dirname}/routes/*.js`],
+    apis: [`${__dirname}/../routes/*.js`],
   };

@@ -7,7 +7,7 @@ module.exports ={
   fileFilter: (req, file, cb) => {
     let ext = path.extname(file.originalname);  
     if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
-      cb(new Error("File type is not supported"), false);
+      cb(new Error("File type is not supported try -.jpg .jpeg .png"), false);
     }
     cb(null, true);
   },

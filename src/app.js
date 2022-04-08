@@ -16,13 +16,13 @@ const {
 const { logger } = require('./shared/');
 const app = express();
 const port = 8000 || PORT;
+
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const bodyParser = require('body-parser');
 const {swaggerOptions}=require("./config")
 const specs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
-
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'hbs');
 
@@ -39,6 +39,9 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/seller', sellerRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use("/api/v1/product",productRouter)
+app.use("*",(req,res)=>{
+  res.status(400).json({status: 404, message : "route not found"})
+})
 app.use(errorHandler);
 
 connectDb()

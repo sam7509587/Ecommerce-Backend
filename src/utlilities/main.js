@@ -1,4 +1,4 @@
-const { User, product, image } = require('../models');
+const { User } = require('../models');
 const {template}= require("../mailTemp/mailTemplete")
 const {
   PHONE,
@@ -149,7 +149,7 @@ exports.verifyEmail = (req) => {
   }
   return false;
 };
-exports.uploadPhoto=async(req,folder="home",next)=>{
+exports.uploadPhoto=async(req,next,folder="home")=>{
   const imageData =[]
   for (i of req.files){
     let filePath = (i["destination"] + "/" + i["filename"]);
@@ -170,22 +170,19 @@ exports.uploadPhoto=async(req,folder="home",next)=>{
     });
   }      
 }
-exports.EditPhoto=async(req,folder,next)=>{
+exports.deletePhoto=async(req,next,imageData)=>{
   try{
-  const imagesPresent = await image.findOne({productId:req.product})
-  if(!imagesPresent){
-
-  }else{
-    for (file of imagesPresent.images){
-      await cloudinary.uploader.destroy(file.publicId, function(result) { 
+    for (file of imageData.images){
+      const public_id =file.publicId
+      await cloudinary.uploader.destroy(public_id, function(result) { 
         if(result.result=="ok"){
-          
+          return true
         }else{
          return next(new ApiError(400,result.result))
         }
       });
-    }
   }}catch(err){
+    console.log(err)
     return next(new ApiError(400, err.message))
   }
 }

@@ -1,50 +1,62 @@
 
-const { ApiError, SELLER, CLOUD_NAME, API_KEY, API_SECRET } = require('../config');
+const { ApiError } = require('../config');
 const { product, image } = require('../models');
-const { validEntry } = require('../validations')
-const { productField, EditPhoto, uploadPhoto } = require("../utlilities");
+const { productField, deletePhoto, uploadPhoto, deleteImages, filters } = require("../utlilities");
 const { checkBrandCategory, brandCateEdit } = require('../utlilities/productUtility');
 
 exports.addProduct = async (req, res, next) => {
   try {
+    console.log("88888888888888888888888888888",req.body,req.file,req)
     await checkBrandCategory(req, res, next)
-    if (req.files.length > 0) {
-      await uploadPhoto(req, "products", next)
-      imageData = { images: req.uplodedFiles }
-      const savedImages = await image.create(imageData)
-      req.imageSaved = savedImages
+    if (req.files) {
+      if (req.files.length > 0) {
+        await uploadPhoto(req, next, "products")
+        imageData = { images: req.uplodedFiles }
+        const savedImages = await image.create(imageData)
+        req.imageSaved = savedImages
+      }
     }
     if (req.body) {
       req.body.createdBy = req.user.id;
       if (!req.imageSaved) {
         const newProduct = await product.create(req.body)
-        return res.status(201).json({ status: 201, message: "product added successfully", newProduct, success: true, })
+        const productfound = await product.findOne({ _id: newProduct.id })
+          .populate("categoryId", "categoryName")
+          .populate("brandId", "brandName")
+          .populate("createdBy", "fullName")
+        return res.status(201).json({ status: 201, message: "product added successfully", productfound, success: true, })
       } else {
         req.body.image = req.imageSaved.id;
         const newProduct = await product.create(req.body)
         req.imageSaved.productId = newProduct.id
         await req.imageSaved.save()
-        const productfound = await product.findOne({id:newProduct}).populate("image")
+        const productfound = await product.findOne({ _id: newProduct.id })
+          .populate("image", "images.imageUrl")
+          .populate("categoryId", "categoryName")
+          .populate("brandId", "brandName")
+          .populate("createdBy", "fullName")
         return res.status(201).json({ status: 201, message: "product added successfully", productfound, success: true, })
       }
     }
   } catch (err) {
-    if (err.name === "CastError") {
+    if (err.name === "CastError" || err.name ==="ValidationError") {
       return next(new ApiError(409, "id of brand or category is in wrong format"))
     }
+
     return next(new ApiError(409, `err  : ${err.name}`))
   }
 }
 
 exports.showProductSeller = async (req, res, next) => {
   try {
-    var { page = 1, limit = 5 } = req.query;
-    fields = productField(req)
-    const products = await product.find({ createdBy: req.user.id }, fields).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
+    const { page = 1, limit = 5 } = req.query;
+    const fields = productField(req, res, next)
+    const filter = filters(req, res, next)
+    const products = await product.find(filter, fields).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
       .populate("categoryId", "categoryId")
       .populate("brandId", "brandId")
       .populate("createdBy", "fullName")
-      .populate("image","_id images.imageUrl")
+      .populate("image", "_id images.imageUrl")
     res.status(200).json({
       status: 200,
       totalProducts: products.length,
@@ -52,6 +64,9 @@ exports.showProductSeller = async (req, res, next) => {
       success: true
     })
   } catch (err) {
+    if (err.name == "ObjectParameterError") {
+      return next(new ApiError(409, "enter correct querys to get the values"))
+    }
     return next(new ApiError(400, err.message))
   }
 }
@@ -61,22 +76,45 @@ exports.editProduct = async (req, res, next) => {
     if (!productPresent) {
       return next(new ApiError(404, "no product found with this id"))
     }
-    if (req.body.length===undefined && req.files===undefined ) {
+    if (!req.body && req.files === undefined) {
+      return next(new ApiError(404, "nothing to change"))
+    }
+    if(Object.keys(req.body).length === 0 &&req.files === undefined){
       return next(new ApiError(404, "nothing to change"))
     }
     req.product = productPresent
     await brandCateEdit(req, res, next)
-    if (req.files.length > 0) {
-      await EditPhoto(req, res, next)
-      await uploadPhoto(req, "products", next)
-      imageData = { images: req.uplodedFiles }
-      const savedImages = await image.findOneAndUpdate({ productId: req.product.id }, imageData, { new: true })
-      req.imageSaved = savedImages
+    if (req.files) {
+      if (req.files.length > 0) {
+        if (!req.product.image) {
+          await uploadPhoto(req, next, "products")
+          const imageData = { peoductId: req.product.id, images:req.uplodedFiles }
+          const savedImages = await image.create(imageData)
+          req.body.image = savedImages.id
+        }
+        else {
+          const imagesData = await image.findOne({ id: req.product.image })
+          await deletePhoto(req, next, imagesData)
+          await uploadPhoto(req, next, "products")
+          const imageData = { images: req.uplodedFiles }
+          const savedImages = await image.findOneAndUpdate({ productId: req.product.id }, imageData, { new: true })
+        }
+      }
     }
     if (req.body) {
       const updated = await product.findOneAndUpdate({ id: productPresent.id }, req.body, { new: true })
-      .populate("image")
-      return res.status(201).json({ status: 201, message: "product added successfully", updated, success: true, })
+        .populate("image", "images.imageUrl")
+        .populate("categoryId", "categoryName")
+        .populate("brandId", "brandName")
+        .populate("createdBy", "fullName")
+      return res.status(201).json({ status: 201, message: "product updated successfully", updated, success: true, })
+    }
+    else{
+     const updated =  req.product.populate("image", "images.imageUrl")
+     .populate("categoryId", "categoryName")
+     .populate("brandId", "brandName")
+     .populate("createdBy", "fullName")
+      return res.status(201).json({ status: 201, message: "product's image updated successfully", success: true, })
     }
 
   } catch (err) {
@@ -94,12 +132,22 @@ exports.deleteProduct = async (req, res, next) => {
     if (!id) {
       return next(new ApiError(404, "productId is required"))
     }
-    const user = await product.findOne({id})
+    const user = await product.findOne({ _id: id, isActive: true })
     if (!user) {
       return next(new ApiError(404, "no product found"))
     }
-    const deletedProduct =  await product.findOneAndDelete({ id }).populate("image")
-    await image.deleteOne({createdBy:req.params.id})
+    const deletedProduct = await product.findOne({ _id: id }).populate("image")
+    if (deletedProduct.image) {
+      const imageData = await image.findOne({ createdBy: req.params.id })
+      await deletePhoto(req, next, imageData)
+      imageData.remove();
+      deletedProduct.isActive = "false";
+      deletedProduct.save()
+      // await image.deleteOne({productId:req.params.id})
+    } else {
+      deletedProduct.isActive = "false";
+      deletedProduct.save()
+    }
     return res.status(200).json({
       status: 200,
       success: true, deletedProduct,
@@ -111,5 +159,32 @@ exports.deleteProduct = async (req, res, next) => {
     }
     return next(new ApiError(409, `err  : ${err}`))
   }
+}
 
+exports.showProduct = async (req, res, next) => {
+  try {
+    console.log(req.params.id)
+    const fields = productField(req)
+    const products = await product.findOne({ _id: req.params.id, isActive: true }, fields)
+      .populate("image", "images.imageUrl")
+      .populate("categoryId", "categoryName")
+      .populate("brandId", "brandName")
+      .populate("createdBy", "fullName")
+    if (!products) {
+      return next(new ApiError(404, "no product found;"))
+    }
+    return res.status(200).json({ status: 200, productsFound: products, success: true })
+  }
+  catch (err) {
+    return next(new ApiError(400, err.message))
+  }
+}
+
+exports.deleteSinglePhoto = async (req, res, next) => {
+  const publicId = req.query.public_id
+  const productId = req.params.id
+  if (!publicId) {
+    return next(new ApiError(404, "no public_ids found to delete image..."))
+  }
+  const imageData = await deleteImages(productId, publicId)
 }
