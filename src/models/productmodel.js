@@ -5,15 +5,15 @@ createdBy: {type: mongoose.Schema.Types.ObjectId , ref: "User"},
 productName	:String,
 categoryId:{type: mongoose.Schema.Types.ObjectId , ref: "category"},
 brandId:{type: mongoose.Schema.Types.ObjectId , ref: "brand"},
-price	:Number,
+price	:{type: String},
 isAvailable	:{type: Boolean,default: true},
 image:{type: mongoose.Schema.Types.ObjectId , ref: "image"},
-rating	:Number,
+rating	:{type: Number},
 quantity  :{type: Number,default :0},
 description	:String,
 isApproved	:{type: Boolean,default: false}
 
-},{timestamps:true})
+},{timestamps:true })
 
 produceSchema.set('toJSON', {
     virtuals: true,

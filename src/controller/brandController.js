@@ -41,7 +41,7 @@ exports.addBrand = async (req, res, next) => {
 
 exports.showBrand = async (req, res, next) => {
     const _id = req.params.id;
-    console.log(">>>>>>>>>>>>>>>>>.....",_id)
+    
     try {
         const brands = await brand.find({ _id, isActive: true }).populate("image", "images.imageUrl")
         console.log(brands)
@@ -89,7 +89,10 @@ exports.deleteBrand = async (req, res, next) => {
     }
 }
 exports.showAllBrands = async (req, res, next) => {
-    const brands = await brand.find({ isActive: true });
+    console.log(req)
+    const { page = 1, limit = 5 } = req.query;
+    console.log({ isActive: true ,$or:[{"brandName":new RegExp(req.query.search)}] })
+    const brands = await brand.find({ isActive: true ,$or:[{"brandName":new RegExp(req.body.search)}] }).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1 });
     if (!brands) {
         return next(new ApiError(404, "no brands found"));
     }

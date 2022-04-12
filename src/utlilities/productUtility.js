@@ -109,3 +109,12 @@ exports.deleteImages=async(product,publicId)=>{
   const urls = await image.find({images: {$elemMatch: {publicId}}})
     return urls
 }
+exports.createFilter=(values)=>{
+    const digit = (/^\d+$/).test(values);
+    const newArray = []
+      regex = new RegExp(values, "i")
+     const arr = [ "price","productName", "description"]
+    arr.forEach(element => { newArray.push({ [element]: regex }) });
+    return newArray
+  
+}

@@ -7,10 +7,10 @@ exports.validProduct = async (req,res,next) => {
     productName	:joi.string().lowercase().required().min(2).max(15).trim(),
     categoryId	:joi.string().required().lowercase().trim(),
     brandId: joi.string().lowercase().required().trim(),
-    price	:joi.number().required().trim(),
+    price	:joi.number().required(),
     isAvailable	:joi.boolean,
     rating	:joi.number(),
-    quantity:joi.number().trim(),
+    quantity:joi.number(),
     publicId:joi.string().lowercase().trim(),
     description	:joi.string().lowercase().min(5).max(150).trim(),
   })
@@ -29,7 +29,7 @@ exports.validEntry = async(req,res,next)=>{
     brandId: joi.string().lowercase().trim(),
     price	:joi.number().trim(),
     isAvailable	:joi.boolean.trim(),
-    quantity:joi.number().trim(),
+    quantity:joi.number(),
     description	:joi.string().lowercase().max(150).min(5).trim(),
   })
   const validData = await data.validate(req.body);

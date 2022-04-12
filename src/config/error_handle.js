@@ -4,9 +4,10 @@ const ApiError = require('./apierror');
 exports.errorHandler = (err, req, res, next) => {
   if (err instanceof ApiError) {
     res.status(err.code).json({
+      success: false,
       status: err.code,
       message: err.msg,
-      success: false,
+      
     });
     return;
   }

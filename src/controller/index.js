@@ -4,6 +4,7 @@ const { showSeller, loginAdmin, approveSeller} = require('./adminControl');
 const {addBrand,showBrand,editBrands,showAllBrands,deleteBrand} = require("./brandController")
 const { registerUser, loginUser ,editUser} = require('./userController');
 const {editCategorys,showAllCategorys,deleteCategory,showCategory,addCategory}=require("./categoryControl")
+const {addToCart,deleteFromCart,incrementDecrement,showCart}=require("./cartControl")
 const {
   createAddress,
   editAddress,
@@ -26,5 +27,5 @@ module.exports = {
   showAddress,
   addProduct,
   showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct,showProduct
-  ,deleteSinglePhoto,showBrand,editCategorys,showAllCategorys,deleteCategory,showCategory
-};
+  ,deleteSinglePhoto,showBrand,editCategorys,showAllCategorys,deleteCategory,showCategory,addToCart,deleteFromCart,incrementDecrement
+  ,showCart};

@@ -1,7 +1,7 @@
 
 const { ApiError } = require('../config');
 const { product, image } = require('../models');
-const { productField, deletePhoto, uploadPhoto, deleteImages, filters } = require("../utlilities");
+const { productField, deletePhoto, uploadPhoto, deleteImages, createFilter,filters } = require("../utlilities");
 const { checkBrandCategory, brandCateEdit } = require('../utlilities/productUtility');
 
 exports.addProduct = async (req, res, next) => {
@@ -38,7 +38,7 @@ exports.addProduct = async (req, res, next) => {
       }
     }
   } catch (err) {
-    if (err.name === "CastError" || err.name ==="ValidationError") {
+    if (err.name === "CastError" || err.name === "ValidationError") {
       return next(new ApiError(409, "id of brand or category is in wrong format"))
     }
 
@@ -50,8 +50,11 @@ exports.showProductSeller = async (req, res, next) => {
   try {
     const { page = 1, limit = 5 } = req.query;
     const fields = productField(req, res, next)
-    // const filter = filters(req, res, next)
-    const data = await product.find({$text:{$search: req.body.filter}},fields).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
+    const filter = filters(req, res, next)
+    const search = createFilter(req.query.search)
+    const neObj ={$or:search}
+    console.log(neObj)
+    const data = await product.find( Object.assign(filter,neObj), fields ).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
       .populate("categoryId", "categoryId")
       .populate("brandId", "brandId")
       .populate("createdBy", "fullName")
@@ -69,6 +72,7 @@ exports.showProductSeller = async (req, res, next) => {
     return next(new ApiError(400, err.message))
   }
 }
+///////////////////////////////////////
 exports.editProduct = async (req, res, next) => {
   try {
     const productPresent = await product.findOne({ _id: req.params.id });
@@ -78,7 +82,7 @@ exports.editProduct = async (req, res, next) => {
     if (!req.body && req.files === undefined) {
       return next(new ApiError(404, "nothing to change"))
     }
-    if(Object.keys(req.body).length === 0 &&req.files === undefined){
+    if (Object.keys(req.body).length === 0 && req.files === undefined) {
       return next(new ApiError(404, "nothing to change"))
     }
     req.product = productPresent
@@ -87,7 +91,7 @@ exports.editProduct = async (req, res, next) => {
       if (req.files.length > 0) {
         if (!req.product.image) {
           await uploadPhoto(req, next, "products")
-          const imageData = { productId: req.product.id, images:req.uplodedFiles }
+          const imageData = { productId: req.product.id, images: req.uplodedFiles }
           const savedImages = await image.create(imageData)
           req.body.image = savedImages.id
         }
@@ -108,11 +112,11 @@ exports.editProduct = async (req, res, next) => {
         .populate("createdBy", "fullName")
       return res.status(201).json({ status: 201, message: "product updated successfully", updated, success: true, })
     }
-    else{
-     const updated =  req.product.populate("image", "images.imageUrl")
-     .populate("categoryId", "categoryName")
-     .populate("brandId", "brandName")
-     .populate("createdBy", "fullName")
+    else {
+      const updated = req.product.populate("image", "images.imageUrl")
+        .populate("categoryId", "categoryName")
+        .populate("brandId", "brandName")
+        .populate("createdBy", "fullName")
       return res.status(201).json({ status: 201, message: "product's image updated successfully", success: true, })
     }
 
@@ -186,3 +190,4 @@ exports.deleteSinglePhoto = async (req, res, next) => {
   }
   const imageData = await deleteImages(productId, publicId)
 }
+

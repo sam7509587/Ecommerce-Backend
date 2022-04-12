@@ -3,7 +3,6 @@ const { ApiError, SECRET_KEY } = require("../config");
 const { User } = require("../models");
 exports.tokenVerify = async (req, res, next) => {
   try {
-    
     let token;
     if (req.cookies.access_token) {
       token = req.cookies.access_token;

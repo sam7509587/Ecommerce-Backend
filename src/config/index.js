@@ -1,7 +1,9 @@
 const { errorHandler, environment, inBulid } = require('./error_handle');
 require('dotenv').config();
 const { swaggerOptions } = require("./swagger")
+const {timeOut,otherRoute}=require("./routeERROR")
 const {upload} =require("./multer")
+const {client}= require("./redis")
 module.exports = {
   PORT: environment("PORT"),
   connectDb: require('./connectdb'),
@@ -25,5 +27,5 @@ module.exports = {
   CLOUD_NAME: environment("CLOUD_NAME"),
   API_KEY: environment("API_KEY"),
   API_SECRET: environment("API_SECRET"),
-  upload
+  upload,timeOut,otherRoute,client
 };
