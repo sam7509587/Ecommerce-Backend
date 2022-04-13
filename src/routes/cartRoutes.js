@@ -1,5 +1,5 @@
 const { USER } = require("../config")
-const { addToCart, deleteProduct, deleteFromCart, incrementDecrement, showCart } = require("../controller")
+const { addToCart, deleteProduct, deleteFromCart, incrementDecrement, showCart, clearCart } = require("../controller")
 const { tokenVerify, checkRole, formData } = require("../middleware");
 const { validCartDetails, validIncrement } = require("../validations");
 const router = require("express").Router()
@@ -50,7 +50,7 @@ router.post("/",tokenVerify,checkRole(USER),formData,validCartDetails,addToCart)
  * /api/v1/cart/{id}:
  *  delete:
  *      summary: remove from cart
- *      tags: [cart]
+ *      tags: [Cart]
  *      parameters:
  *          - in : path
  *            name: id
@@ -70,8 +70,8 @@ router.delete("/:id",tokenVerify,checkRole(USER),deleteFromCart)
  * @swagger
  * /api/v1/cart/{id}:
  *  put:
- *      summary: remove from cart
- *      tags: [cart]
+ *      summary: increment and decrement for product
+ *      tags: [Cart]
  *      parameters:
  *          - in : path
  *            name: id
@@ -91,5 +91,46 @@ router.delete("/:id",tokenVerify,checkRole(USER),deleteFromCart)
  */
 
 router.put("/:id",tokenVerify,checkRole(USER),validIncrement,incrementDecrement)
+
+
+ /**
+ * @swagger
+ * /api/v1/cart:
+ *  get:
+ *      summary: show the all products in cart
+ *      tags: [Cart]
+ *      parameters:
+ *          - in : query
+ *            name: page
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name: limit   
+ *            schema:
+ *              type: string 
+ *          - in : query
+ *      responses:
+ *          200:
+ *              description: cart found successfull
+ *
+ *          404:
+ *              description : data doesnt found
+ */
+
 router.get("/",tokenVerify,checkRole(USER),showCart)
+ /**
+ * @swagger
+ * /api/v1/cart:
+ *  delete:
+ *      summary: clear cart
+ *      tags: [Cart]
+ *      responses:
+ *          200:
+ *              description: cart deleted successfull
+ *
+ *          404:
+ *              description : cart doesnt found
+ */
+router.delete("/",tokenVerify,checkRole(USER),clearCart)
+
 module.exports = router

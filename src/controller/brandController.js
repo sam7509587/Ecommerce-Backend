@@ -44,7 +44,6 @@ exports.showBrand = async (req, res, next) => {
     
     try {
         const brands = await brand.find({ _id, isActive: true }).populate("image", "images.imageUrl")
-        console.log(brands)
         if (brands.length == 0) {
             return next(new ApiError(404, "no product found;"))
         }
@@ -89,10 +88,8 @@ exports.deleteBrand = async (req, res, next) => {
     }
 }
 exports.showAllBrands = async (req, res, next) => {
-    console.log(req)
     const { page = 1, limit = 5 } = req.query;
-    console.log({ isActive: true ,$or:[{"brandName":new RegExp(req.query.search)}] })
-    const brands = await brand.find({ isActive: true ,$or:[{"brandName":new RegExp(req.body.search)}] }).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1 });
+    const brands = await brand.find(Object.assign({ isActive: true ,$or:[{"brandName":new RegExp(req.query.search)}]})).limit(limit).skip((page - 1) * limit).sort({ createdAt: -1 });
     if (!brands) {
         return next(new ApiError(404, "no brands found"));
     }
@@ -101,7 +98,6 @@ exports.showAllBrands = async (req, res, next) => {
 exports.editBrands = async (req, res, next) => {
     try {
         const _id = req.params.id;
-        console.log(_id)
         const namePresent = await brand.findOne({ _id, isActive: true })
 
         if (!namePresent) {

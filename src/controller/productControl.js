@@ -49,12 +49,16 @@ exports.addProduct = async (req, res, next) => {
 exports.showProductSeller = async (req, res, next) => {
   try {
     const { page = 1, limit = 5 } = req.query;
+    if(page <=0||limit<=0){
+      return next(new ApiError(409,"limit or page can not be eqaul or less than zero"))
+    }
     const fields = productField(req, res, next)
     const filter = filters(req, res, next)
     const search = createFilter(req.query.search)
     const neObj ={$or:search}
-    console.log(neObj)
-    const data = await product.find( Object.assign(filter,neObj), fields ).limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
+    const query =Object.assign(filter,neObj)
+    const data = await product.find( query, fields )
+    .limit(limit).skip((page-1) * limit).sort({ createdBy: -1 })
       .populate("categoryId", "categoryId")
       .populate("brandId", "brandId")
       .populate("createdBy", "fullName")
@@ -124,7 +128,6 @@ exports.editProduct = async (req, res, next) => {
     if (err.name === "CastError") {
       return next(new ApiError(409, "check all ids may be format is wrong"))
     }
-    console.log(err)
     return next(new ApiError(409, `err  : ${err}`))
   }
 }

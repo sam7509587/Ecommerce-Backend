@@ -20,10 +20,10 @@ exports.fieldsToShow = (req) => {
       id:1,
       role: 1,
       fullName: 1,
+      "phoneNumber":1,
       email: 1,
-      phoneNumber: 0,
       isVerified: 1,
-      isApprove: 1,
+      isApprove: 1
     };
     return fields;
   }
@@ -39,3 +39,11 @@ exports.sortByField = (req) => {
     return sort;
   }
 };
+exports.searchValues=(req)=>{
+    const values = req.query.search
+    const newArray = []
+      regex = new RegExp(values, "i")
+     const arr = ["email","role","fullName","phoneNumber","aboutUs"]
+    arr.forEach(element => { newArray.push({ [element]: regex }) });
+    return {$or:newArray}
+}

@@ -4,11 +4,12 @@ const { User } = require("../models");
 exports.tokenVerify = async (req, res, next) => {
   try {
     let token;
-    if (req.cookies.access_token) {
+    if(req.headers.authorization){
+      token = req.headers.authorization.split(' ')[1] 
+    }
+    else if (req.cookies.access_token) {
       token = req.cookies.access_token;
       // return next(new ApiError(404, "no token found"))
-    }else if(req.headers.authorization){
-      token = req.headers.authorization.split(' ')[1] 
     }
     else{
       return next(new ApiError(404, "no token found")) 

@@ -182,7 +182,6 @@ exports.deletePhoto=async(req,next,imageData)=>{
         }
       });
   }}catch(err){
-    console.log(err)
     return next(new ApiError(400, err.message))
   }
 }

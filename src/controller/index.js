@@ -4,7 +4,7 @@ const { showSeller, loginAdmin, approveSeller} = require('./adminControl');
 const {addBrand,showBrand,editBrands,showAllBrands,deleteBrand} = require("./brandController")
 const { registerUser, loginUser ,editUser} = require('./userController');
 const {editCategorys,showAllCategorys,deleteCategory,showCategory,addCategory}=require("./categoryControl")
-const {addToCart,deleteFromCart,incrementDecrement,showCart}=require("./cartControl")
+const {addToCart,deleteFromCart,incrementDecrement,showCart,clearCart}=require("./cartControl")
 const {
   createAddress,
   editAddress,
@@ -13,6 +13,7 @@ const {
   showCountry,
 } = require('./addressControl');
 const { addProduct,showProductSeller,editProduct,deleteProduct,showProduct ,deleteSinglePhoto} = require('./productControl');
+const {addReview}=require("./reviewsControl")
 module.exports = {
   login,
   showSeller,
@@ -26,6 +27,6 @@ module.exports = {
   deleteAddress,editBrands,showAllBrands,deleteBrand,
   showAddress,
   addProduct,
-  showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct,showProduct
+  showCountry,editUser,addBrand,addCategory,showProductSeller,editProduct,deleteProduct,showProduct,clearCart
   ,deleteSinglePhoto,showBrand,editCategorys,showAllCategorys,deleteCategory,showCategory,addToCart,deleteFromCart,incrementDecrement
   ,showCart};

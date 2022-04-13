@@ -89,7 +89,7 @@ router.post("/",tokenVerify,checkRole(SELLER,ADMIN),formData,validProduct,addPro
  *          - in : query
  *            name: filter  
  *            schema:
- *              type: number 
+ *              type: object 
  *          - in: query
  *            name: fields       
  *      responses:

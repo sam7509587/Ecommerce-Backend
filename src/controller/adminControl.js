@@ -6,7 +6,7 @@ const {
   sendMail,
   adminData,
   fieldsToShow,
-  sortByField,
+  searchValues,
 } = require('../utlilities');
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY, ADMIN, SELLER, ApiError } = require('../config/index');
@@ -15,8 +15,8 @@ const async = require('hbs/lib/async');
 exports.showSeller = async (req, res) => {
   var { page = 1, limit = 5 } = req.query;
   const fields = fieldsToShow(req);
-  //    const sort = sortByField(req)
-  const sellers = await User.find({ role: SELLER }, fields)
+  const search = searchValues(req);
+  const sellers = await User.find(Object.assign({role: SELLER},search), fields)
     .limit(limit)
     .skip((page - 1) * limit)
     .sort({ createdAt: -1 });
@@ -110,7 +110,9 @@ exports.enterAdmin = async (req, res, next) => {
     };
     refreshToken = jwt.sign(payload, SECRET_KEY);
     accessToken = jwt.sign(payload, SECRET_KEY);
-    res.status(200).json({
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+    }).status(200).json({
       status: 200,
       accessToken,
       message: 'log in successfull',

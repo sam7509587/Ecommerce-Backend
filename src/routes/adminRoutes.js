@@ -64,6 +64,10 @@ router.post('/loginAdmin', loginAdmin);
  *            schema:
  *              type: array
  *              description: enter the fields you want to see about seller
+ *          - in : query
+ *            name: search
+ *            schema:
+ *              type: string
  *      responses:
  *          200:
  *              description: this is the list of seller
@@ -71,8 +75,8 @@ router.post('/loginAdmin', loginAdmin);
  *          404:
  *              description : seller doesnt found
  */
-router.post('/auth/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
-
+router.get('/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
+// router.get("/getseller/:id",tokenVerify,checkRole(ADMIN), )
 /**
  * @swagger
  * /api/v1/admin/approve:

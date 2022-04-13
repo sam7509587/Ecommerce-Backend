@@ -20,7 +20,7 @@ const {
   userRouter,
   sellerRouter,
   adminRouter,
-  productRouter, categoryRoutes, brandRoutes, cartRoutes
+  productRouter, categoryRoutes, brandRoutes, cartRoutes, reviewsRouter
 } = require('./routes');
 const { logger } = require('./shared/');
 const app = express();
@@ -54,6 +54,7 @@ app.use("/api/v1/product", productRouter)
 app.use("/category", categoryRoutes)
 app.use("/brand", brandRoutes)
 app.use("/api/v1/cart",cartRoutes)
+app.use("/api/v1/reviews",reviewsRouter)
 app.use("*", otherRoute)
 app.use(errorHandler);
 connectDb()

@@ -86,7 +86,10 @@ exports.deleteCategory = async (req, res, next) => {
     }
 }
 exports.showAllCategorys = async (req, res, next) => {
-    const categorys = await category.find({ isActive: true });
+    const { page = 1, limit = 5 } = req.query;
+    const categorys = await category.find({ isActive: true, $or:[{"categoryName":new RegExp(req.query.search)}] })
+    .limit(limit).skip((page - 1) * limit)
+    .sort({ createdAt: -1 });
     if (!categorys) {
         return next(new ApiError(404, "no categorys found"));
     }

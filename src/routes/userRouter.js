@@ -122,8 +122,8 @@ router.get('/verifyuser/:token', verifyToken);
  *       500:
  *         description: Some server error
  */
-router.post('/loginuser', loginUser);
-
+router.post('/loginuser',loginUser);
+ 
 /**
  * @swagger
  * /api/v1/user/verifyuserotp:

@@ -76,6 +76,19 @@ const { validBrand } = require("../validations");
  *  get:
  *      summary: show the all brands
  *      tags: [Brand]
+ *      parameters:
+ *          - in : query
+ *            name: page
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name: limit
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name: search
+ *            schema:
+ *              type: string  
  *      responses:
  *          200:
  *              description: brands found successfull

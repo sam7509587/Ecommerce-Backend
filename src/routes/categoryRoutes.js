@@ -75,6 +75,19 @@ const { validCategory } = require("../validations");
  *  get:
  *      summary: show the all category
  *      tags: [Category]
+ *      parameters:
+ *          - in : query
+ *            name: page
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name: limit
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name: search
+ *            schema:
+ *              type: string 
  *      responses:
  *          200:
  *              description: category found successfull
