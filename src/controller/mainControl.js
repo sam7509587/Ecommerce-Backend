@@ -59,14 +59,12 @@ const phoneLog = async (req, res) => {
   }
 };
 exports.login = async (req, res, next) => {
-  const validUser = await valid(req);
-  if (validUser === 'noError') {
-    if (req.body.email) {
-      emailLog(req, res);
-    } else {
-      phoneLog(req, res);
-    }
-  } else {
-    res.status(403).json({ status: 403, message: validUser, success: false });
+  const userAvailable = await userPresent(req);
+  if (userAvailable.role != SELLER) {
+    return next(new ApiError(401, 'only user con seller from here'))
   }
+  if (!userAvailable || userAvailable.password != req.body.password) {
+    return next(new ApiError(403, 'invalid email or password'))
+  }
+  await userLogin(req, res, userAvailable);
 };

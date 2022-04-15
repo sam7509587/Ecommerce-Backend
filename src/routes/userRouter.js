@@ -1,10 +1,11 @@
 const express = require('express');
 const { USER } = require('../config');
 const router = express.Router();
-const { registerUser, loginUser,editUser } = require('../controller');
+const { registerUser, loginUser,editUser, deleteUser } = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
 const { verifyToken, verifyOtp } = require('../services');
+const { validSeller ,valid, validUserProfile} = require('../validations');
 
 /**
  * @swagger
@@ -59,7 +60,7 @@ const { verifyToken, verifyOtp } = require('../services');
 
 /**
  * @swagger
- * /api/v1/user/registeruser:
+ * /api/v1/user:
  *   post:
  *     summary: Create a new User
  *     tags: [User]
@@ -80,11 +81,11 @@ const { verifyToken, verifyOtp } = require('../services');
  *         description: Some server error
  */
 
-router.post('/registeruser', registerUser);
+router.post('/',validSeller,registerUser);
 
 /**
  * @swagger
- * /api/v1/user/verifyuser/{token}:
+ * /api/v1/user/{token}:
  *  get:
  *      summary: verify user email by token
  *      tags: [User]
@@ -102,7 +103,7 @@ router.post('/registeruser', registerUser);
  *          404:
  *              description : user doesnt found
  */
-router.get('/verifyuser/:token', verifyToken);
+router.get('/:token', verifyToken);
 
 /**
  * @swagger
@@ -122,11 +123,11 @@ router.get('/verifyuser/:token', verifyToken);
  *       500:
  *         description: Some server error
  */
-router.post('/loginuser',loginUser);
+router.post('/loginuser',valid,loginUser);
  
 /**
  * @swagger
- * /api/v1/user/verifyuserotp:
+ * /api/v1/user/verifyotp:
  *   post:
  *     summary: Verify Otp for logging in
  *     tags: [User]
@@ -153,11 +154,11 @@ router.post('/loginuser',loginUser);
  *       500:
  *         description: Some server error
  */
-router.post('/verifyuserotp', verifyOtp);
+router.post('/verifyotp', verifyOtp);
 /**
  * @swagger
- * /api/v1/user/verifyuserotp:
- *   post:
+ * /api/v1/user:
+ *   put:
  *     summary: Verify Otp for logging in
  *     tags: [User]
  *     requestBody:
@@ -184,7 +185,22 @@ router.post('/verifyuserotp', verifyOtp);
  *         description: Some server error
  */
 
-router.post("/auth/editprofile",tokenVerify,checkRole(USER),editUser)
+router.put("/",tokenVerify,checkRole(USER),validUserProfile,editUser)
 
+
+/**
+ * @swagger
+ * /api/v1/user:
+ *   delete:
+ *     summary: delete user
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: The User was successfully delted
+ *       500:
+ *         description: Some server error
+ */
+router.delete("/",tokenVerify,checkRole(USER),deleteUser)
 // router.post("/image",/*uploads.single('image')*/uploadProfileImg)
+
 module.exports = router;

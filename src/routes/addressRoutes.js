@@ -1,4 +1,5 @@
 const express = require('express');
+const { SELLER, USER } = require('../config');
 const router = express.Router();
 const {
   createAddress,
@@ -6,7 +7,10 @@ const {
   deleteAddress,
   showAddress,
   showCountry,
+  getAddress,
 } = require('../controller');
+const { tokenVerify, checkRole } = require('../middleware');
+const { validAddress, validAddEdit } = require('../validations');
 /**
  * @swagger
  * components:
@@ -25,10 +29,6 @@ const {
  *                  - houseNo
  *                  - addressType
  *              properties:
- *                  fullName :
- *                      type : string
- *                  phoneNumber :
- *                      type : string
  *                  country :
  *                      type : string
  *                  state :
@@ -47,8 +47,6 @@ const {
  *                      type : string
  *
  *              example :
- *                  fullName : "sameer"
- *                  phoneNumber : "7509587122"
  *                  country : "India"
  *                  state : "Mp"
  *                  city : "mhow"
@@ -68,7 +66,7 @@ const {
 
 /**
  * @swagger
- * /api/v1/address/register:
+ * /api/v1/address/:
  *   post:
  *     summary: Add new address
  *     tags: [Address]
@@ -80,20 +78,21 @@ const {
  *             $ref: '#/components/schemas/address'
  *     responses:
  *       200:
- *         description: The Seller was successfully registered
+ *         description: The address added
  *       500:
  *         description: Some server error
  */
-router.post('/register', createAddress);
+ 
+router.post('/',tokenVerify,checkRole(USER,SELLER),validAddress,createAddress);
 
 /**
  * @swagger
- * /api/v1/address/edit:
- *  patch:
+ * /api/v1/address/{id}:
+ *  put:
  *      summary: edit users address
  *      tags: [Address]
  *      parameters:
- *          - in : query
+ *          - in : path
  *            name: id
  *            schema:
  *              type: string
@@ -106,33 +105,33 @@ router.post('/register', createAddress);
  *             $ref: '#/components/schemas/address'
  *      responses:
  *          200:
- *              description: this is the list of seller
+ *              description: edited successfull
  *
  *          404:
  *              description : data doesnt found
  */
-router.patch('/edit', editAddress);
+router.put('/:id',tokenVerify,checkRole(USER,SELLER),validAddEdit,editAddress);
 
 /**
  * @swagger
- * /api/v1/address/delete:
+ * /api/v1/address/{id}:
  *  delete:
  *      summary: delete address by id
  *      tags: [Address]
  *      parameters:
- *          - in : query
+ *          - in : path
  *            name: id
  *            schema:
  *              type: string
  *              description: enter the id of address of which you want to delete
  *      responses:
  *          200:
- *              description: this is the list of seller
+ *              description: deleted successfull
  *
  *          404:
  *              description : data doesnt found
  */
-router.delete('/delete',deleteAddress);
+router.delete('/:id',tokenVerify,checkRole(USER,SELLER),deleteAddress);
 /**
  * @swagger
  * /api/v1/address/show:
@@ -147,12 +146,38 @@ router.delete('/delete',deleteAddress);
  *              description: enter the id of address of which you want to delete
  *      responses:
  *          200:
- *              description: this is the list of seller
+ *              description: deleted successfull
  *
  *          404:
  *              description : data doesnt found
  */
-router.get('/show', showAddress);
+router.get('/',tokenVerify,checkRole(USER,SELLER),showAddress);
+/**
+ * @swagger
+ * /api/v1/address/{id}:
+ *  get:
+ *      summary: get address by id 
+ *      tags: [Address]
+ *      parameters:
+ *          - in : path
+ *            name: id
+ *            schema:
+ *              type: string
+ *              description: enter the id of address of which you want to edit
+ *      requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/address'
+ *      responses:
+ *          200:
+ *              description: this address
+ *
+ *          404:
+ *              description : data doesnt found
+ */
+ router.get('/:id',tokenVerify,checkRole(USER,SELLER),validAddEdit,getAddress);
 
-router.get('/fetchcountry', showCountry);
+// router.get('/fetchcountry', showCountry);
 module.exports = router;

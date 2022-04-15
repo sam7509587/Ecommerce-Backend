@@ -2,11 +2,12 @@ const express = require('express');
 const { SELLER } = require('../config');
 const router = express.Router();
 
-const { login, registerSelller } = require('../controller');
+const { login, registerSelller,deleteSeller } = require('../controller');
 const { editSellerProfile } = require('../controller/sellerControl');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
 const { verifyToken, verifyOtp } = require('../services/index');
+const { validSeller, valid, ValidSellerProfile } = require('../validations');
 
 /**
  * @swagger
@@ -61,7 +62,7 @@ const { verifyToken, verifyOtp } = require('../services/index');
 
 /**
  * @swagger
- * /api/v1/seller/registerseller:
+ * /api/v1/seller:
  *   post:
  *     summary: Create a new Seller
  *     tags: [Seller]
@@ -77,11 +78,11 @@ const { verifyToken, verifyOtp } = require('../services/index');
  *       500:
  *         description: Some server error
  */
-router.post('/registerseller', registerSelller);
+router.post('/', validSeller,registerSelller);
 
 /**
  * @swagger
- * /api/v1/seller/verifyseller/{token}:
+ * /api/v1/seller/{token}:
  *  get:
  *      summary: verify seller email by token
  *      tags: [Seller]
@@ -98,7 +99,7 @@ router.post('/registerseller', registerSelller);
  *          404:
  *              description : seller doesnt found
  */
-router.get('/verifyseller/:token', verifyToken);
+router.get('/:token', verifyToken);
 /**
  * @swagger
  * /api/v1/seller/loginseller:
@@ -117,7 +118,7 @@ router.get('/verifyseller/:token', verifyToken);
  *       500:
  *         description: Some server error
  */
-router.post('/loginseller', login);
+router.post('/loginseller', valid,login);
 /**
  * @swagger
  * /api/v1/seller/verifyotp:
@@ -151,12 +152,12 @@ router.post('/verifyotp', verifyOtp);
 
 /**
  * @swagger
- * /api/v1/seller/auth/editprofile:
- *   post:
+ * /api/v1/seller:
+ *   put:
  *     summary: edit profile
  *     tags: [Seller]
  *     requestBody:
- *       required: true
+ *       required: true 
  *       content:
  *         application/json:
  *           schema:
@@ -167,5 +168,19 @@ router.post('/verifyotp', verifyOtp);
  *       500:
  *         description: Some server error
  */
-router.post("/auth/editprofile",tokenVerify,checkRole(SELLER),editSellerProfile)
+router.put("/",tokenVerify,checkRole(SELLER),ValidSellerProfile,editSellerProfile)
+
+/**
+ * @swagger
+ * /api/v1/seller:
+ *   delete:
+ *     summary: delete seller
+ *     tags: [Seller]
+ *     responses:
+ *       200:
+ *         description: The Seller was successfully registered
+ *       500:
+ *         description: Some server error
+ */
+router.delete("/",tokenVerify,checkRole(SELLER),deleteSeller)
 module.exports = router;

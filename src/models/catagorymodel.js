@@ -3,7 +3,7 @@ const mongoose =require("mongoose")
 const catagory = mongoose.Schema({
     categoryName : String,
     description : String,
-    image:String,
+    image:{type:mongoose.Schema.Types.ObjectId,ref:"image"},
     isActive: {type: Boolean,default:true}
 }, { timestamps: true })
 

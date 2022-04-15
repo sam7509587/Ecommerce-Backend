@@ -16,7 +16,7 @@ exports.tokenVerify = async (req, res, next) => {
     }
       const user = await jwt.verify(token, SECRET_KEY, async (err, info) => {
         if (info) {
-          const user = await User.findOne({ _id: info.uad });
+          const user = await User.findOne({ _id: info.uad,isDeleted:false});
           if (!user) {
             return next(new ApiError(404, "no user found attached to this token"))
           }

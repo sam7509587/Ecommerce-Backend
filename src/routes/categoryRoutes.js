@@ -121,7 +121,7 @@ const { validCategory } = require("../validations");
  *        500:
  *          description: Some server error
  */
- router.put("/:id",tokenVerify,checkRole(ADMIN),validCategory,editCategorys)
+ router.put("/:id",tokenVerify,checkRole(ADMIN),formData,validCategory,editCategorys)
 /**
  * @swagger
  * /category/{id}:

@@ -6,7 +6,7 @@ const {
   userPhoneLogin,
 updateSellerBody} = require('./seller');
 const { addressData } = require('./addressServices');
-const {updateBody}= require("./mainService")
+const {updateBody}= require("./mainService.js")
 const {mailToUnverifed}=require("./cron")
 module.exports = {
   createUser,

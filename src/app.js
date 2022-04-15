@@ -20,7 +20,7 @@ const {
   userRouter,
   sellerRouter,
   adminRouter,
-  productRouter, categoryRoutes, brandRoutes, cartRoutes, reviewsRouter
+  productRouter, categoryRoutes, brandRoutes, cartRoutes, reviewsRouter, addressRouter
 } = require('./routes');
 const { logger } = require('./shared/');
 const app = express();
@@ -51,6 +51,7 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/seller', sellerRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use("/api/v1/product", productRouter)
+app.use("/api/v1/address",addressRouter)
 app.use("/category", categoryRoutes)
 app.use("/brand", brandRoutes)
 app.use("/api/v1/cart",cartRoutes)

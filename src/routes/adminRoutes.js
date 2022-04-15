@@ -2,9 +2,10 @@ const express = require('express');
 const { ADMIN } = require('../config');
 const router = express.Router();
 
-const { showSeller, approveSeller, loginAdmin ,addCategory} = require('../controller');
+const { showSeller, approveSeller, loginAdmin ,addCategory, deleteUserParmanently, getUser, rejectSeller} = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
+const { validAdmin } = require('../validations');
 
 router.get("/adminLogin",(req,res)=>{
     res.render("index")
@@ -40,11 +41,11 @@ router.get("/adminLogin",(req,res)=>{
  *       500:
  *         description: Some server error
  */
-router.post('/loginAdmin', loginAdmin);
+router.post('/',validAdmin,loginAdmin);
 
 /**
  * @swagger
- * /api/v1/admin/getsellers:
+ * /api/v1/admin/:
  *  get:
  *      summary: verify seller email by token
  *      tags: [Admin]
@@ -75,7 +76,7 @@ router.post('/loginAdmin', loginAdmin);
  *          404:
  *              description : seller doesnt found
  */
-router.get('/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
+router.get('/',tokenVerify,checkRole(ADMIN),showSeller);
 // router.get("/getseller/:id",tokenVerify,checkRole(ADMIN), )
 /**
  * @swagger
@@ -102,6 +103,44 @@ router.get('/getsellers',tokenVerify,checkRole(ADMIN),showSeller);
  *       500:
  *         description: Some server error
  */
-router.post('/auth/approve',tokenVerify,checkRole(ADMIN), approveSeller);
-
+router.get('/:id',tokenVerify,checkRole(ADMIN), approveSeller);
+/**
+ * @swagger
+ * /api/v1/admin/{id}:
+ *   post:
+ *     summary: delete seller or user by id
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: The Admin has deleted seller/user
+ *       500:
+ *         description: Some server error
+ */
+router.delete("/:id",tokenVerify,checkRole(ADMIN),deleteUserParmanently)
+/**
+ * @swagger
+ * /api/v1/admin/user/{id}:
+ *   get:
+ *     summary: delete seller or user by id
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: The user found
+ *       500:
+ *         description: Some server error
+ */
+router.get("/user/:id",tokenVerify,checkRole(ADMIN),getUser)
+/**
+ * @swagger
+ * /api/v1/admin/user/{id}:
+ *   get:
+ *     summary: reject seller or user by id
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: The user found
+ *       500:
+ *         description: Some server error
+ */
+router.get("/reject/:id",tokenVerify,checkRole(ADMIN),rejectSeller)
 module.exports = router;

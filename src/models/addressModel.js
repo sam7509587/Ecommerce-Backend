@@ -2,15 +2,13 @@ const mongoose = require('mongoose');
 
 const addSchema = mongoose.Schema(
   {
-    userId: String,
+    userId: {type:mongoose.Schema.Types.ObjectId,ref:"User"},
     country: { type: String },
     state: { type: String },
-    city: { type: String, enum: ['admin', 'seller', 'user'] },
+    city: { type: String},
     street: String,
     houseNo: String,
     pinCode: Number,
-    phoneNumber: Number,
-    fullName: String,
     addressType: String,
     isActive: { type: Boolean, default: true },
     isDefault: { type: Boolean, default: false },

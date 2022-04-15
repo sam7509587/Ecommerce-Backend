@@ -47,13 +47,12 @@ exports.validBrand = async(req,res,next)=>{
     description	:joi.string().lowercase().max(150).min(5).trim(),
   })
   const validData = await data.validate(req.body);
-  if(validData.error){
-    next(new ApiError(400,validData.error.details[0].message))
-  }else{
+  if (validData.error) {
+    const errorMsg =validData.error.details[0].message.replace(/[^a-zA-Z ]/g, "")
+    return next(new ApiError(409,errorMsg))
+  } else {
     next()
-  }
-  return validData
-}
+  }}
 
 exports.validCategory = async(req,res,next)=>{
   const data = joi.object({
@@ -61,10 +60,10 @@ exports.validCategory = async(req,res,next)=>{
     description	:joi.string().lowercase().max(150).min(5).trim(),
   })
   const validData = await data.validate(req.body);
-  if(validData.error){
-    next(new ApiError(400,validData.error.details[0].message))
-  }else{
+  if (validData.error) {
+    const errorMsg =validData.error.details[0].message.replace(/[^a-zA-Z ]/g, "")
+    return next(new ApiError(409,errorMsg))
+  } else {
     next()
   }
-  return validData
 }

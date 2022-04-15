@@ -139,16 +139,6 @@ exports.checkExp = async (req) => {
   }
 };
 
-exports.verifyEmail = (req) => {
-  const email = req.body.email;
-  if (
-    email.slice(email.length - 9, email.length) === 'gmail.com' ||
-    email.slice(email.length - 11, email.length) === 'yopmail.com'
-  ) {
-    return true;
-  }
-  return false;
-};
 exports.uploadPhoto=async(req,next,folder="home")=>{
   const imageData =[]
   for (i of req.files){

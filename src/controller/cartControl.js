@@ -1,6 +1,3 @@
-const Redis = require("ioredis");
-const redis = new Redis();
-
 const { ApiError } = require("../config");
 const { product, cart } = require("../models")
 exports.addToCart = async (req, res, next) => {
@@ -21,7 +18,6 @@ exports.addToCart = async (req, res, next) => {
                 productId, quantity, userId: req.user.id
             }
             const data = await cart.create(cartData);
-          const redisData= await redis.set(data.id, data);
             return res.status(201).json({ success: true, status: 201, message: "added successfull", data })
         }
     } catch (err) {
@@ -40,7 +36,6 @@ exports.deleteFromCart = async (req, res, next) => {
         if (!addedCart) {
             return next(new ApiError(404, "no cart data found"))
         }
-        await redis.del(_id)
         addedCart.remove()
         res.status(200).json({ success: true, status: 200, message: "data deleted successfull" })
     } catch (err) {
@@ -68,7 +63,6 @@ exports.incrementDecrement = async(req, res, next) => {
             } else {
                 const data = await addedCart.save();
                 data.price=(addedCart.quantity*productPresent.price)
-                await redis.set(data.id,data,"EX", 60);
                 res.status(201).json({ success: true, status: 201, message: "increment successfull", data })
             }
         }
@@ -79,7 +73,6 @@ exports.incrementDecrement = async(req, res, next) => {
             } else {
                 const data = await addedCart.save();
                 data.price=(addedCart.quantity*productPresent.price)
-                await redis.set(data.id,data,"EX", 60);
                 res.status(201).json({ success: true, status: 201, message: "decrement successfull", data })
             }
         }

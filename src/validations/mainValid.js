@@ -1,6 +1,8 @@
 const joi = require('joi');
+const { NetworkContext } = require('twilio/lib/rest/supersim/v1/network');
+const { ApiError } = require('../config');
 
-exports.valid = async (req) => {
+exports.valid = async (req,res,next) => {
   const data = joi
     .object({
       phoneNumber: joi.string(),
@@ -10,28 +12,28 @@ exports.valid = async (req) => {
     .xor('email', 'phoneNumber');
   const validData = await data.validate(req.body);
   if (validData.error) {
-    const errorMsg = validData.error.details[0].message;
-    return errorMsg;
+    const errorMsg =validData.error.details[0].message.replace(/[^a-zA-Z ]/g, "")
+    return next(new ApiError(409,errorMsg))
   } else {
-    const noError = 'noError';
-    return noError;
+    next()
   }
 };
 
-exports.validUserProfile = async(req)=>{
+exports.validUserProfile = async(req,res,next)=>{
 const data = joi.object({
-  // gstNumber : joi.string(),
-  // // .when('document', {is: joi.exist(), then: joi.required(), otherwise: joi.optional()}),
-  // // regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
-  // document:joi.string(),
-  // // .when('gstNumber', {is: joi.exist(), then: joi.required(), otherwise: joi.optional()}),
   fullName: joi.string().lowercase().trim().max(30).min(6),
   phoneNumber: joi
   .string()
   .regex(/^[789]\d{9}$/)
   .message('invalid phone numbeer please check '),
 })
-const validData = await data.validate(req.body);  
-return validData
+const validData = await data.validate(req.body);
+if(validData.error){
+  const err = validData.error.details[0].message.replace(/[^a-zA-Z ]/g, "")
+      return next(new ApiError(409,err))
+    }
+    else{
+      next()
+    }
 }
 

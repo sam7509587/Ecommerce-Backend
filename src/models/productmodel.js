@@ -8,7 +8,7 @@ brandId:{type: mongoose.Schema.Types.ObjectId , ref: "brand"},
 price	:{type: String},
 isAvailable	:{type: Boolean,default: true},
 image:{type: mongoose.Schema.Types.ObjectId , ref: "image"},
-rating	:{type: Number},
+rating	:{type: String},
 quantity  :{type: Number,default :0},
 description	:String,
 isApproved	:{type: Boolean,default: false}

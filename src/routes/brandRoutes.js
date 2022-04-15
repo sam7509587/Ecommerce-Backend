@@ -143,3 +143,4 @@ const { validBrand } = require("../validations");
  */
  router.delete("/:id",tokenVerify,checkRole(ADMIN),deleteBrand)
 module.exports = router;
+ 

@@ -35,7 +35,7 @@ exports.addCategory = async (req, res, next) => {
                 .populate("image", "images.imageUrl")
             return res.status(201).json({ status: 201, message: "category created successfully", success: true, data })
         }
-    }
+    } 
 }
 
 exports.showCategory = async (req, res, next) => {

@@ -99,7 +99,6 @@ exports.editBrands = async (req, res, next) => {
     try {
         const _id = req.params.id;
         const namePresent = await brand.findOne({ _id, isActive: true })
-
         if (!namePresent) {
             return next(new ApiError(409, "no brand found with this id"))
         }
