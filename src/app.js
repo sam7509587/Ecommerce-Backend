@@ -20,7 +20,7 @@ const {
   userRouter,
   sellerRouter,
   adminRouter,
-  productRouter, categoryRoutes, brandRoutes, cartRoutes, reviewsRouter, addressRouter
+  productRouter, categoryRoutes, brandRoutes, cartRoutes, reviewsRouter, addressRouter, orderRouter
 } = require('./routes');
 const { logger } = require('./shared/');
 const app = express();
@@ -35,9 +35,8 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'hbs');
 app.use(apiLimits)
-
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({ origin: 'http://127.0.0.1:3000'}));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,13 +54,13 @@ app.use("/api/v1/address",addressRouter)
 app.use("/category", categoryRoutes)
 app.use("/brand", brandRoutes)
 app.use("/api/v1/cart",cartRoutes)
-app.use("/api/v1/reviews",reviewsRouter)
+app.use("/api/v1/review",reviewsRouter)
+app.use("/api/v1/order",orderRouter)
 app.use("*", otherRoute)
 app.use(errorHandler);
 connectDb()
   .then(() => {
     app.listen(port, () => {
-      logger.info('database connected');
       logger.info(`server is running :http://127.0.0.1:${port}`);
     });
   })

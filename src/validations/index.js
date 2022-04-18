@@ -5,5 +5,5 @@ const { validAddress,validAddEdit } = require('./addressValid');
 const {validUserProfile} = require("./mainValid")
 const {validProduct,validEntry,validBrand,validCategory}= require("./validProduct");
 const { validCartDetails,validIncrement } = require('./validCartDetails');
-
-module.exports = { valid, validAdmin,validCartDetails,validIncrement, validSeller,validAddEdit, validAddress,validUserProfile,validProduct,validCategory ,validBrand,ValidSellerProfile,validEntry};
+const {validReview,validReviewEdit}=require("./reviewValidate")
+module.exports = { valid, validReviewEdit,validReview,validAdmin,validCartDetails,validIncrement, validSeller,validAddEdit, validAddress,validUserProfile,validProduct,validCategory ,validBrand,ValidSellerProfile,validEntry};

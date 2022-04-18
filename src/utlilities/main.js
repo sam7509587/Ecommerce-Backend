@@ -75,11 +75,11 @@ exports.sendMail = async (req, token = undefined, msg, role = SELLER) => {
   const passedMsg = msg
   const greeting = "Hello"
   if (token === undefined || null) {
-    const link = `<td align="center" style="border-radius: 3px;" bgcolor="#2874f0"><h3>Enjoy your journey</h3></td>`
+    const link = `<td align="center" style="b-radius: 3px;" bgcolor="#2874f0"><h3>Enjoy your journey</h3></td>`
     msgBody = template(greeting,fullName,passedMsg,link)
 
   } else {
-    const link = `<td align="center" style="border-radius: 3px;" bgcolor="#2874f0"><a href="http://127.0.0.1:${PORT}/api/v1/${role}/verify${role}/${token}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #2874f0; display: inline-block;">Confirm Email</a></td>`
+    const link = `<td align="center" style="b-radius: 3px;" bgcolor="#2874f0"><a href="http://127.0.0.1:${PORT}/api/v1/${role}/verify${role}/${token}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; b-radius: 2px; b: 1px solid #2874f0; display: inline-block;">Confirm Email</a></td>`
     msgBody = template(greeting,fullName,passedMsg,link)
   }
   const email = req.body.email;

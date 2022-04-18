@@ -12,7 +12,7 @@ router.get("/adminLogin",(req,res)=>{
 })
 /**
  * @swagger
- * /api/v1/admin/loginAdmin:
+ * /api/v1/admin:
  *   post:
  *     summary: login admin
  *     tags: [Admin]
@@ -33,7 +33,7 @@ router.get("/adminLogin",(req,res)=>{
  *                  password:
  *                      type: string
  *              example:
- *                  email: "sameer@yaml.com"
+ *                  email: "admin@yopmail.com"
  *                  password: "1234567"
  *     responses:
  *       200:
@@ -45,7 +45,7 @@ router.post('/',validAdmin,loginAdmin);
 
 /**
  * @swagger
- * /api/v1/admin/:
+ * /api/v1/admin:
  *  get:
  *      summary: verify seller email by token
  *      tags: [Admin]

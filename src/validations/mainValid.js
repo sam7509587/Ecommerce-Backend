@@ -1,5 +1,4 @@
 const joi = require('joi');
-const { NetworkContext } = require('twilio/lib/rest/supersim/v1/network');
 const { ApiError } = require('../config');
 
 exports.valid = async (req,res,next) => {

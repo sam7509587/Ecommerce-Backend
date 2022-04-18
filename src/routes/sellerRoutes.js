@@ -49,8 +49,8 @@ const { validSeller, valid, ValidSellerProfile } = require('../validations');
  *                      type: string
  *              example:
  *                  phoneNumber : "7509587124"
- *                  email: "sameer@yopmail.com"
- *                  password: "1234567"
+ *                  email: "seller@yopmail.com"
+ *                  password: "123456"
  */
 
 /**

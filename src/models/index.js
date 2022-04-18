@@ -1,5 +1,5 @@
 const User = require('./userModel');
-const userAddress = require('./addressModel');
+const address = require('./addressModel');
 const sellerProfile = require('./sellerProfile');
 const product = require('./productmodel');
 const brand = require('./brandmodel');
@@ -7,4 +7,5 @@ const category = require('./catagorymodel');
 const image = require('./imagemodel');
 const cart = require("./cartModel")
 const review = require("./reviewModel")
-module.exports = {User, userAddress ,sellerProfile,product,brand,category,image,cart,review};
+const order = require("./orderModel")
+module.exports = {User, address ,sellerProfile,product,brand,category,image,cart,review,order};
