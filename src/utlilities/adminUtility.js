@@ -23,7 +23,7 @@ exports.fieldsToShow = (req) => {
       "phoneNumber":1,
       email: 1,
       isVerified: 1,
-      isApprove: 1
+      isApproved: 1
     };
     return fields;
   }

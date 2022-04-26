@@ -28,25 +28,6 @@ exports.productField=(req)=>{
         return fields;
       }
 }
-exports.checkBrandCategory=async(req,res,next)=>{
-  const brandId = req.body.brandId
-  const categoryId = req.body.categoryId
-  if(!brandId){
-    return next(new ApiError(404,"brand id is required"))
-  }
-  if(!categoryId){
-  return  next(new ApiError(404,"category id is required"))
-  }
-  const categoryPresent = await category.findOne({_id:categoryId,isActive:true});
-  if(!categoryPresent){
-    return  next(new ApiError(404,"categoryId is invalid"))
-  }
-  const brandPresent = await brand.findOne({_id:brandId});
-  if(!brandPresent){
-    return  next(new ApiError(404,"brandId is invalid"))
-  }
-}
-
 
 exports.brandCateEdit=async(req,res,next)=>{
   const brandId = req.body.brandId
@@ -113,7 +94,7 @@ exports.createFilter=(values)=>{
     const digit = (/^\d+$/).test(values);
     const newArray = []
       regex = new RegExp(values, "i")
-     const arr = [ "price","productName", "description"]
+     const arr = ["productName"]
     arr.forEach(element => { newArray.push({ [element]: regex }) });
     return newArray
   

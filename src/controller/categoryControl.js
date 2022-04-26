@@ -25,7 +25,7 @@ exports.addCategory = async (req, res, next) => {
     if (req.body) {
         if (!req.imageSaved) {
             const data = await category.create(req.body)
-            return res.status(201).json({ status: 201, message: "category created successfully", success: true, data })
+            return res.status(201).json({ statusCode: 201, message: "category created successfully", data })
         } else {
             req.body.image = req.imageSaved.id;
             const newCategory = await category.create(req.body)
@@ -33,7 +33,7 @@ exports.addCategory = async (req, res, next) => {
             await req.imageSaved.save()
             const data = await category.findOne({ _id: newCategory.id })
                 .populate("image", "images.imageUrl")
-            return res.status(201).json({ status: 201, message: "category created successfully", success: true, data })
+            return res.status(201).json({ statusCode: 201, message: "category created successfully", data })
         }
     } 
 }
@@ -45,11 +45,10 @@ exports.showCategory = async (req, res, next) => {
         if (categorys.length == 0) {
             return next(new ApiError(404, "no product found;"))
         }
-        res.status(200).json({
-            status: 200,
+        return res.status(200).json({
+            statusCode: 200,
             message: "category founds",
             data:categorys,
-            success: true
         })
     } catch (err) {
         next(new ApiError(400, err.message))
@@ -74,9 +73,9 @@ exports.deleteCategory = async (req, res, next) => {
             categoryPresent.save()
         }
         return res.status(200).json({
-            status: 200,
+            statusCode: 200,
             message: "deleted successfull !!",
-            success: true, data: categoryPresent
+             data: categoryPresent
         })
     } catch (err) {
         if (err.name === "CastError") {
@@ -93,7 +92,7 @@ exports.showAllCategorys = async (req, res, next) => {
     if (!categorys) {
         return next(new ApiError(404, "no categorys found"));
     }
-    res.status(200).json({ status: 200, message: `categorys found - ${categorys.length}`, categorys, success: true })
+    return res.status(200).json({ statusCode: 200, message: `categorys found `, data  :categorys })
 }
 exports.editCategorys = async (req, res, next) => {
     try {
@@ -132,11 +131,11 @@ exports.editCategorys = async (req, res, next) => {
             if (Object.keys(req.body).length >= 1) {
                 const updated = await category.findOneAndUpdate({ id: req.categoryName.id }, req.body, { new: true })
                     .populate("image", "images.imageUrl")
-                return res.status(201).json({ status: 201, message: "category updated successfully", data: updated, success: true, })
+                return res.status(201).json({ statusCode: 201, message: "category updated successfully", data: updated})
             }
             else {
                 const updated = req.categoryName.populate("image", "images.imageUrl")
-                return res.status(201).json({ status: 201, message: "category's image updated successfully", success: true, data: updated })
+                return res.status(201).json({ statusCode: 201, message: "category's image updated successfully", data: updated })
             }
         }
     } catch (err) {

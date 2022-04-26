@@ -11,7 +11,7 @@ exports.validSeller = async (req, res, next) => {
       .string()
       .required()
       .regex(/^[789]\d{9}$/)
-      .message('invalid phone numbeer please check '),
+      .message('invalid phone number please check '),
     fullName: joi.string().lowercase().trim().max(30).min(3).required(),
   });
   const validData = await data.validate(req.body);

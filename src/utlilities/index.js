@@ -12,9 +12,8 @@ const { adminData, fieldsToShow, sortByField,searchValues } = require('./adminUt
 const { sellerData } = require('./sellerUtility');
 const { UserData } = require('./userUtility');
 const { addressPresent } = require('./addessUtility');
-const { checkCategoryBrand,brandCateEdit,productField,deleteImages,filters,createFilter} = require('./productUtility');
+const { brandCateEdit,productField,deleteImages,filters,createFilter} = require('./productUtility');
 module.exports = {
-  checkCategoryBrand,
   userPresent,
   sendOtp,searchValues,
   sendMail,
@@ -29,5 +28,5 @@ module.exports = {
   sellerData,
   addressPresent,
   uploadPhoto,
-  productField,checkCategoryBrand,brandCateEdit,deletePhoto,deleteImages,filters,createFilter
+  productField,brandCateEdit,deletePhoto,deleteImages,filters,createFilter
 };

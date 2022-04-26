@@ -1,28 +1,27 @@
 const { validAddress } = require("../validations");
 const { userPresent, addressPresent } = require("../utlilities");
-const { userAddress } = require("../models");
+const { address } = require("../models");
 const { ApiError } = require("../config");
 const axios = require("axios").default;
 
 exports.createAddress = async (req, res, next) => {
-  const address = await addressPresent(req);
-  if (address === null) {
+  const addressFound = await addressPresent(req);
+  if (addressFound === null) {
     req.body.isDefault = true;
     req.body.userId = req.user.id;
-    const data = await userAddress.create(req.body);
+    const data = await address.create(req.body);
     return res.status(200).json({
-      status: 200,
+      statusCode: 200,
       message: "your data has been saved",
-      success: true,
       data
     });
   } else {
     req.body.userId = req.user.id;
-    const data = await userAddress.create(req.body);
+    const data = await address.create(req.body);
     return res.status(200).json({
-      status: 200,
+      statusCode: 200,
       message: "your data has been saved",
-      success: true, data
+      data
     });
   }
 };
@@ -32,21 +31,20 @@ exports.editAddress = async (req, res, next) => {
     if(Object.entries(req.body).length===0){
       return next(new ApiError(404,"nothing to change"))
     }
-    const address = await userAddress.findOne({ _id })
+    const address = await address.findOne({ _id })
     if (address === null)
       return next(new ApiError(404, "no address found "))
 
     if (req.body.isDefault == true) {
-      const add = await userAddress.findOneAndUpdate(
+      const add = await address.findOneAndUpdate(
         { userId: address.userId },
         { isDefault: false }
       );}
-      const data = await userAddress.findOneAndUpdate({ _id }, req.body, { new: true });
+      const data = await address.findOneAndUpdate({ _id }, req.body, { new: true });
       return res.status(200).json({
-        status: 200,
+        statusCode: 200,
         message: "your address has been updated",
         data,
-        success: true,
       });
   } catch (err) {
     if (err.name === "CastError") {
@@ -67,31 +65,28 @@ exports.deleteAddress = async (req, res,next) => {
   if (address.isDefault === true) {
     const userId = address.userId;
     await address.remove();
-    const newAdd = await userAddress
+    const newAdd = await address
       .findOne({ userId })
       .sort({ createdAt: -1 });
 
     if (!newAdd) {
       return res.status(200).json({
-        status: 200,
-        message: "your address has been deleted",
-        success: true,
+        statusCode: 200,
+        message: "your address has been deleted"
       });
     }else{
       newAdd.isDefault = true;
       newAdd.save()
     return res.status(200).json({
-      status: 200,
-      message: "your address has been deleted",
-      success: true,
+      statusCode: 200,
+      message: "your address has been deleted"
     });}
   }
   if (address.isDefault === false) {
-    await userAddress.deleteOne({ _id });
+    await address.deleteOne({ _id });
     return res.status(200).json({
-      status: 200,
-      message: "your address has been deleted",
-      success: true,
+      statusCode: 200,
+      message: "your address has been deleted"
     });
   }
 } catch (err) {
@@ -104,13 +99,13 @@ exports.deleteAddress = async (req, res,next) => {
 exports.showAddress = async (req, res, next) => {
   try{
     const { page = 1, limit = 5 } = req.query;
-  const address = await userAddress.find(
+  const address = await address.find(
     { userId:req.user.id})  
     .limit(limit).skip((page - 1) * limit)
     .sort({ createdAt: -1 });;
   return res
     .status(200)
-    .json({ status: 200, message: `addresses found`, address, success: true });
+    .json({ statusCode: 200, message: `addresses found`, data: address});
   }catch(err){
     if (user.name == "CastError") {
       return next(new ApiError(404, "invalid id format "))
@@ -152,12 +147,12 @@ exports.showAddress = async (req, res, next) => {
 
 exports.getAddress=async(req,res,next)=>{
 try{
-  const data = await userAddress.findOne({_id:req.params.id})
+  const data = await address.findOne({_id:req.params.id})
   if(!data){
     return next(new ApiError(404,"no address found"))
   }
   else{
-    res.status(200).json({success: true,status: 200,message: data})
+    return res.status(200).json({statusCode: 200,message: data})
   }
 }catch(err){
   if (err.name == "CastError") {

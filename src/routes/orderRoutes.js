@@ -1,10 +1,12 @@
 const express = require('express');
-const {USER, ADMIN } = require('../config');
-const { placeOrder, getAllOrders, getOrder, cancelOrder, changeStatus } = require('../controller');
+const {USER, SELLER } = require('../config');
+const { placeOrder, getAllOrders, getOrder, cancelOrder, changeStatus,fetchDates } = require('../controller');
 const { checkRole, tokenVerify } = require('../middleware');
+const { validOrder } = require('../validations');
 const router = express.Router();
 
 
+router.get("/fetch_dates",tokenVerify,checkRole(USER),fetchDates)
 /**
  * @swagger
  * components:
@@ -52,7 +54,7 @@ const router = express.Router();
  *          404:
  *              description : data doesnt found
  */
-router.post("/:id",tokenVerify,checkRole(USER),placeOrder)
+router.post("/",tokenVerify,checkRole(USER),validOrder,placeOrder)
 /**
  * @swagger
  * /api/v1/order:
@@ -103,10 +105,8 @@ router.get("/:id",tokenVerify,checkRole(USER),getOrder)
  *          404:
  *              description : data doesnt found
  */
+
 router.put("/:id",tokenVerify,checkRole(USER),cancelOrder)
-
 //////////order status//////
-router.put("/status/:id",tokenVerify,checkRole(ADMIN),changeStatus)
-
+router.put("/status/:id",tokenVerify,checkRole(SELLER),changeStatus)
 module.exports = router
-

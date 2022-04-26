@@ -1,13 +1,15 @@
-const { USER, USER_MAIL, USER_PASSWORD, PORT } = require('../config');
-const cloudinary = require("cloudinary");
-const { template } = require('../mailTemp/mailTemplete.js');
+const { USER, USER_MAIL, USER_PASSWORD, PORT, SECRET_KEY } = require('../config');
+const { template } = require("../templates/mailTemplete");
+// const bcrypt = require("bcrypt")
 
-exports.UserData = (req) => {
+exports.UserData = async(req) => {
   req.body.isApproved = true;
   req.body.role = USER;
+// req.body.password = await bcrypt.hash(SECRET_KEY,12)
   return req.body;
 };
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const async = require('hbs/lib/async');
 exports.sendMailtoAll = async (user, token = undefined) => {
   const fullName = user.fullName
   const greeting = "Hello"
@@ -33,7 +35,7 @@ exports.sendMailtoAll = async (user, token = undefined) => {
       cid: 'handshake' 
  }]
   };
-  require("../mailTemp/mailTemplete.js")
+  require("../templates/mailTemplete")
   const result = await transport.sendMail(mailOptions, (error, info) => {
     if (error) {
       return 'error';

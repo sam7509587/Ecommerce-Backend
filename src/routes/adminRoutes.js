@@ -2,7 +2,7 @@ const express = require('express');
 const { ADMIN } = require('../config');
 const router = express.Router();
 
-const { showSeller, approveSeller, loginAdmin ,addCategory, deleteUserParmanently, getUser, rejectSeller} = require('../controller');
+const { showSeller, approveSeller, loginAdmin ,addCategory, deleteUserParmanently, rejectSeller} = require('../controller');
 const { checkRole } = require('../middleware/checkrole');
 const { tokenVerify } = require('../middleware/verifyToken');
 const { validAdmin } = require('../validations');
@@ -117,19 +117,6 @@ router.get('/:id',tokenVerify,checkRole(ADMIN), approveSeller);
  *         description: Some server error
  */
 router.delete("/:id",tokenVerify,checkRole(ADMIN),deleteUserParmanently)
-/**
- * @swagger
- * /api/v1/admin/user/{id}:
- *   get:
- *     summary: delete seller or user by id
- *     tags: [Admin]
- *     responses:
- *       200:
- *         description: The user found
- *       500:
- *         description: Some server error
- */
-router.get("/user/:id",tokenVerify,checkRole(ADMIN),getUser)
 /**
  * @swagger
  * /api/v1/admin/user/{id}:

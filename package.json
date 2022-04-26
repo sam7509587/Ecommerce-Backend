@@ -34,6 +34,8 @@
     "multiparty": "^4.2.3",
     "node-cron": "^3.0.0",
     "nodemailer": "^6.7.2",
+    "pdf-creator-node": "^2.3.4",
+    "pdfkit": "^0.13.0",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "twilio": "^3.75.1",

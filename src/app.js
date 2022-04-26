@@ -6,7 +6,7 @@ const path = require("path");
 const rateLimit = require('express-rate-limit')
 const apiLimits = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 1000,
   legacyHeaders: false,
   message: "Request limit exceeds wait for 1 hour to try again;"
 })
@@ -36,7 +36,8 @@ app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'hbs');
 app.use(apiLimits)
 app.use(cookieParser());
-app.use(cors({ origin: 'http://127.0.0.1:3000'}));
+app.use(cors());
+// {origin: "http://127.0.0.1:3000"}
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

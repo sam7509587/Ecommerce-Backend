@@ -2,9 +2,9 @@ const { User, sellerProfile } = require('../models');
 const { sendMail, sendOtp, checkExp, generateOtp } = require('../utlilities');
 const { SECRET_KEY, ApiError } = require('../config/index');
 const jwt = require('jsonwebtoken');
-const async = require('hbs/lib/async');
 exports.createUser = async (req) => {
   try {
+
     const newUser = await User.create(req);
     return newUser;
   } catch (err) {
@@ -18,16 +18,15 @@ exports.userLogin = async (req, res, userLogin) => {
         const payload = {
           uad: userLogin._id,
         };
-        refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
         accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-        res.status(200).cookie("access_token", accessToken, {
+        userLogin.isDeleted = false;
+        await userLogin.save()
+        return res.status(200).cookie("access_token", accessToken, {
           httpOnly: true,
         }).json({
+          statusCode: 200,
           message: 'log in successfull and token has been sent',
-          refreshToken,
-          accessToken,
-          status: 200,
-          success: true,
+          token:accessToken
         });
       } else {
         const expDate = await checkExp(req);
@@ -39,33 +38,30 @@ exports.userLogin = async (req, res, userLogin) => {
             { otp, otpExp: Date.now() }
           );
           if (userotp != 'Error') {
-            res.status(200).json({
-              status: 200,
+            return res.status(200).json({
+              statusCode: 200,
               message: 'otp has been sent kindly verify in 10 min to log in ',
-              success: true,
             });
           } else {
-            res.status(500).json({
-              status: 500,
+            return res.status(500).json({
+              statusCode: 500,
               message:
                 ' unknown error occured try after some time or unverified user by twilio',
-              hint: 'try email for logging in',
-              success: false,
+              hint: 'try email for logging in'
             });
           }
         } else {
-          res.status(401).json({
-            status: 401,
+          return res.status(401).json({
+            statusCode: 401,
             message:
               'otp time not expired yet kindly wait for 10 min to get new otp',
           });
         }
       }
     } else {
-      res.status(401).json({
+      return res.status(401).json({
         message: 'you are not approved by admin , kindly wait',
-        status: 401,
-        success: false,
+        statusCode: 401
       });
     }
   } else {
@@ -75,14 +71,14 @@ exports.userLogin = async (req, res, userLogin) => {
       req.body.email = userLogin.email;
       await sendMail(req, token, 'Verify your Account');
       await User.updateOne({ email: req.body.email }, { tokenExp: Date.now() });
-      res.status(401).json({
-        status: 401,
+      return res.status(401).json({
+        statusCode: 401,
         message:
           'Already a user but not verified user; email has been sent kindly verify in 10 min ',
       });
     } else {
-      res.status(401).json({
-        status: 401,
+      return res.status(401).json({
+        statusCode: 401,
         message: 'token time is not expired yet kindly verify your email',
       });
     }
@@ -106,63 +102,63 @@ exports.verifyToken = async (req, res, next) => {
     { resetToken },
     { isVerified: true, refreshToken: null }
   );
-  res.status(200).json({
-    message: 'user verfified successfull !! wait for admins approval',
-    status: 200,
-    success: true,
+  if(user.role==="seller"){
+   return res.status(200).json({
+      message: 'seller verfified successfull !! wait for admin approval ',
+      statusCode: 200
+    });
+  }
+  return res.status(200).json({
+    message: 'user verfified successfull !! can login now ',
+    statusCode: 200
   });
 };
 
 exports.verifyOtp = async (req, res,next) => {
   const {phoneNumber} = req.body;
-  const Otp = req.body.otp;
-  if(!phoneNumber || Otp){
+const Otp = req.body.otp
+  if(!phoneNumber && !Otp){
     return next(new ApiError(404,"please provide both otp and phoneNumber"))
   }
+
   const user = await User.findOne({phoneNumber});
   if (user) {
     if (user.isVerified === true) {
-      console.log(user.otp === Otp)
+      console.log(user.otp,Otp)
       if (user.otp === Otp) {
         const expDate = await checkExp(req);
         if (expDate <= 10 || user.otp === null || expDate === NaN) {
           const payload = {
             uad: user._id,
           };
-          refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
           accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-          res.status(200).json({
+          return res.status(200).json({
+            statusCode: 200,
             message: 'log in successfull',
-            refreshToken,
-            accessToken,
-            status: 200,
-            success: true,
+           token :accessToken,
           });
           await User.updateOne({ phoneNumber }, { otp: null, otpExp: null });
         } else {
           res
             .status(401)
-            .json({ status: 401, message: 'otp expired', success: false });
+            .json({ statusCode: 401, message: 'otp expired' });
         }
       } else {
-        res.status(401).json({
-          message: 'invalid otp ',
-          status: 401,
-          success: false,
+        return res.status(401).json({
+          statusCode: 401,
+          message: 'invalid otp '
         });
       }
     } else {
-      res.status(401).json({
-        status: 401,
-        message: 'not verified the email kindly verify it',
-        success: false,
+      return res.status(401).json({
+        statusCode: 401,
+        message: 'not verified the email kindly verify it'
       });
     }
   } else {
-    res.status(404).json({
+    return res.status(404).json({
       message: 'user not found check phoneNumber',
-      status: 404,
-      success: false,
+      statusCode: 404
     });
   }
 };
@@ -173,20 +169,16 @@ exports.userPhoneLogin = async (req, res, userLogin) => {
         const payload = {
           uad: userLogin._id,
         };
-        refreshToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
         accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-        res.status(200).json({
+        return res.status(200).json({
+          statusCode: 200,
           message: 'log in successfull',
-          refreshToken,
-          accessToken,
-          status: 200,
-          success: true,
+          data: accessToken,
         });
       } else {
-        res.status(401).json({
+        return res.status(401).json({
+          statusCode: 401,
           message: 'you are not approved by admin , kindly wait',
-          status: 401,
-          success: false,
         });
       }
     } else {
@@ -196,24 +188,23 @@ exports.userPhoneLogin = async (req, res, userLogin) => {
         const token = userLogin.resetToken;
         await sendMail(req, token, 'Verify your Account');
         await User.updateOne({ email }, { tokenExp: Date.now() });
-        res.status(401).json({
-          status: 401,
+        return res.status(401).json({
+          statusCode: 401,
           message:
             'Already a user but not verified; email has been sent kindly verify in 10 min ',
         });
       } else {
-        res.status(401).json({
-          status: 401,
+        return res.status(401).json({
+          statusCode: 401,
           message:
             'token time is not expired yet kindly verify your email and than use phone to login',
         });
       }
     }
   } else {
-    res.status(401).json({
-      message: 'wrong password !!',
-      status: 401,
-      success: false,
+    return res.status(401).json({
+      statusCode: 401,
+      message: 'wrong password !!'
     });
   }
 };

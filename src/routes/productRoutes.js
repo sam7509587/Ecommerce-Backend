@@ -1,7 +1,8 @@
 const express = require('express');
-const { SELLER, ADMIN } = require('../config');
+const { SELLER, ADMIN,USER, PUBLIC} = require('../config');
 const router = express.Router();
-const { addProduct ,showProductSeller,editProduct,deleteProduct,showProduct,deleteSinglePhoto} = require('../controller');
+const { addProduct ,showProductSeller,editProduct,deleteProduct,
+    showProduct,approveProduct,deleteSinglePhoto} = require('../controller');
 const { checkRole,tokenVerify, formData } = require('../middleware');
 const { validProduct, validEntry } = require('../validations');
 
@@ -69,7 +70,7 @@ const { validProduct, validEntry } = require('../validations');
  *          404:
  *              description : data doesnt found
  */
-router.post("/",tokenVerify,checkRole(SELLER,ADMIN),formData,validProduct,addProduct)
+router.post("/",tokenVerify,checkRole(SELLER),formData,validProduct,addProduct)
 /**
  * @swagger
  * /api/v1/product:
@@ -96,7 +97,7 @@ router.post("/",tokenVerify,checkRole(SELLER,ADMIN),formData,validProduct,addPro
  *          200:
  *              description: this is the list of products
  */
-router.get("/",tokenVerify,checkRole(SELLER,ADMIN),formData,showProductSeller)
+router.get("/",tokenVerify,checkRole(SELLER,ADMIN,USER,PUBLIC),showProductSeller)
 /**
  * @swagger
  * /api/v1/product/{id}:
@@ -121,8 +122,7 @@ router.get("/",tokenVerify,checkRole(SELLER,ADMIN),formData,showProductSeller)
  *          404:
  *              description : data doesnt found
  */
-router.put("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,validEntry,editProduct)
-
+router.put("/:id",tokenVerify,checkRole(SELLER),formData,validEntry,editProduct)
 /**
  * @swagger
  * /api/v1/product/{id}:
@@ -142,7 +142,7 @@ router.put("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,validEntry,editPr
  *          404:
  *              description : data doesnt found
  */
-router.get("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,showProduct)
+router.get("/:id",tokenVerify,checkRole(SELLER,ADMIN,USER),showProduct)
 /**
  * @swagger
  * /api/v1/product/{id}:
@@ -162,6 +162,9 @@ router.get("/:id",tokenVerify,checkRole(SELLER,ADMIN),formData,showProduct)
  *          404:
  *              description : data doesnt found
  */
-router.delete("/:id",tokenVerify,checkRole(SELLER,ADMIN),deleteProduct)
+router.delete("/:id",tokenVerify,checkRole(SELLER),deleteProduct)
+
+router.get("/approve/:id",tokenVerify,checkRole(ADMIN),approveProduct)
 // router.delete("/:id",tokenVerify,checkRole(SELLER),deleteSinglePhoto)
 module.exports = router
+

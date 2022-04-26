@@ -20,8 +20,7 @@ exports.registerSelller = async (req, res, next) => {
   req.fullName =newUser.fullName
   sendMail(req, token, 'token is here and will expire in 10 min');
   return res.status(201).json({
-    success: true,
-    status: 201,
+    statusCode: 201,
     message:
       'Sign Up Successfull mail sent and token is here and will expire in 10 min',
       data:newUser
@@ -38,7 +37,7 @@ exports.editSellerProfile=async(req,res,next)=>{
   }
   const data = await updateSellerBody(req,id)
   const updated = await User.findOne({_id:id})
-  return res.status(201).json({success: true,stattus :201,message: "data has been updated",data:updated})
+  return res.status(201).json({statusCode :201,message: "data has been updated",data:updated})
 }catch(err){
   if (err.name === "CastError") {
     return next(new ApiError(409, "check all ids may be format is wrong"))
@@ -47,11 +46,13 @@ exports.editSellerProfile=async(req,res,next)=>{
 }
 }
 exports.deleteSeller=(req,res,next)=>{
+  if( req.user.isDeleted=true){
+    return next(new ApiError(409,"no user found may the user has deleted the account"))
+  }
   req.user.isDeleted=true;
   req.user.save();
-  res.status(200).json({
-    success:false,
-    status:200,
+  return res.status(200).json({
+    statusCode:200,
     message: "data has been deleted"
   })
 }

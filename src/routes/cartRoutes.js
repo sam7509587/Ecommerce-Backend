@@ -24,7 +24,6 @@ const router = require("express").Router()
  *                  quantity : "12"
  */
 
-
 /**
  * @swagger
  * /api/v1/cart:
@@ -64,8 +63,8 @@ router.post("/",tokenVerify,checkRole(USER),formData,validCartDetails,addToCart)
  *          404:
  *              description : data doesnt found
  */
-router.delete("/:id",tokenVerify,checkRole(USER),deleteFromCart)
 
+router.delete("/:id",tokenVerify,checkRole(USER),deleteFromCart)
 /**
  * @swagger
  * /api/v1/cart/{id}:
@@ -92,7 +91,6 @@ router.delete("/:id",tokenVerify,checkRole(USER),deleteFromCart)
 
 router.put("/:id",tokenVerify,checkRole(USER),validIncrement,incrementDecrement)
 
-
  /**
  * @swagger
  * /api/v1/cart:
@@ -116,7 +114,6 @@ router.put("/:id",tokenVerify,checkRole(USER),validIncrement,incrementDecrement)
  *          404:
  *              description : data doesnt found
  */
-
 router.get("/",tokenVerify,checkRole(USER),showCart)
  /**
  * @swagger

@@ -1,4 +1,4 @@
-const mongoose =require("mongoose")
+const mongoose =require("mongoose");
 
 const photoSchema = mongoose.Schema({
   productId: {type:mongoose.Schema.Types.ObjectId,ref:"product"},
@@ -6,7 +6,8 @@ const photoSchema = mongoose.Schema({
     publicId : String}],
     isActive : {type : Boolean , default : true},
     brandId:{type:mongoose.Schema.Types.ObjectId,ref:"brand"},
-    categoryId:{type:mongoose.Schema.Types.ObjectId,ref:"category"}
+    categoryId:{type:mongoose.Schema.Types.ObjectId,ref:"category"},
+    reviewId:{type:mongoose.Schema.Types.ObjectId,ref:"review"}
 }, { timestamps: true })
 
 photoSchema.set('toJSON', {

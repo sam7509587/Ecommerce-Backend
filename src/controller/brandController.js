@@ -25,7 +25,7 @@ exports.addBrand = async (req, res, next) => {
     if (req.body) {
         if (!req.imageSaved) {
             const data = await brand.create(req.body)
-            return res.status(201).json({ status: 201, message: "brand created successfully", success: true,data })
+            return res.status(201).json({ statusCode: 201, message: "brand created successfully",data })
         } else {
             req.body.image = req.imageSaved.id;
             const newBrand = await brand.create(req.body)
@@ -33,7 +33,7 @@ exports.addBrand = async (req, res, next) => {
             await req.imageSaved.save()
             const data = await brand.findOne({ _id: newBrand.id })
                 .populate("image", "images.imageUrl")
-            return res.status(201).json({ status: 201, message: "brand created successfully", success: true,data })
+            return res.status(201).json({ statusCode: 201, message: "brand created successfully",data })
         }
     }
 }
@@ -47,10 +47,9 @@ exports.showBrand = async (req, res, next) => {
         if (brands.length == 0) {
             return next(new ApiError(404, "no product found;"))
         }
-        res.status(200).json({
-            status: 200,
+        return res.status(200).json({
+            statusCode: 200,
             message: "brand founds",
-            success: true,
             data: brands
         })
     } catch (err) {
@@ -76,9 +75,9 @@ exports.deleteBrand = async (req, res, next) => {
             brandPresent.save()
         }
         return res.status(200).json({
-            status: 200,
+            statusCode: 200,
             message: "deleted successfull !!",
-            success: true, data: brandPresent
+            data: brandPresent
         })
     } catch (err) {
         if (err.name === "CastError") {
@@ -93,7 +92,7 @@ exports.showAllBrands = async (req, res, next) => {
     if (!brands) {
         return next(new ApiError(404, "no brands found"));
     }
-    res.status(200).json({ status: 200, message: `brands found - ${brands.length}`, success: true,data:brands })
+    return res.status(200).json({ statusCode: 200, message: `brands found - ${brands.length}`,data:brands })
 }
 exports.editBrands = async (req, res, next) => {
     try {
@@ -132,11 +131,11 @@ exports.editBrands = async (req, res, next) => {
         if(Object.keys(req.body).length>=1){
             const updated = await brand.findOneAndUpdate({ id:req.brand .id }, req.body, { new: true })
               .populate("image", "images.imageUrl")
-            return res.status(201).json({ status: 201, message: "brand updated successfully", data:updated, success: true, })
+            return res.status(201).json({ statusCode: 201, message: "brand updated successfully", data:updated})
         }
           else{
            const updated =  req.brand.populate("image", "images.imageUrl")
-            return res.status(201).json({ status: 201, message: "brand's image updated successfully", success: true,data:updated })
+            return res.status(201).json({ statusCode: 201, message: "brand's image updated successfully",data:updated })
           }}
     } catch (err) {
         if (err.name === "CastError") {

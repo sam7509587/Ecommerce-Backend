@@ -3,6 +3,8 @@ require('dotenv').config();
 const { swaggerOptions } = require("./swagger")
 const {timeOut,otherRoute}=require("./routeERROR")
 const {upload} =require("./multer")
+const {deliveryStatus,publicRoutes,ADMIN,SELLER,USER,PUBLIC}= require("./env")
+const {createPdf}=require("./pdf")
 module.exports = {
   PORT: environment("PORT"),
   connectDb: require('./connectdb'),
@@ -15,9 +17,10 @@ module.exports = {
   EN_TYPE: environment("EN_TYPE"),
   USER_MAIL: environment("USER_MAIL"),
   USER_PASSWORD: environment("USER_PASSWORD"),
-  ADMIN:"admin",
-  SELLER:"seller",
-  USER:"user",
+  ADMIN,
+  SELLER,
+  USER,
+  PUBLIC,
   ApiError: require('./apierror'),
   errorHandler,
   environment,
@@ -26,5 +29,5 @@ module.exports = {
   CLOUD_NAME: environment("CLOUD_NAME"),
   API_KEY: environment("API_KEY"),
   API_SECRET: environment("API_SECRET"),
-  upload,timeOut,otherRoute
+  upload,timeOut,otherRoute,createPdf,deliveryStatus,publicRoutes
 };

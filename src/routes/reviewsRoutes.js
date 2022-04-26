@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { USER } = require("../config");
 const { addReview,deleteReview,editReview } = require("../controller");
-const {tokenVerify,checkRole} =require("../middleware");
+const {tokenVerify,checkRole, formData} =require("../middleware");
 const { validReview, validReviewEdit } = require("../validations");
 
 
@@ -38,7 +38,7 @@ const { validReview, validReviewEdit } = require("../validations");
  *          404:
  *              description : data doesnt found
  */
-router.post("/:id",tokenVerify,checkRole(USER),validReview,addReview)
+router.post("/:id",tokenVerify,checkRole(USER),formData,validReview,addReview)
 
 /**
  * @swagger
@@ -73,7 +73,7 @@ router.post("/:id",tokenVerify,checkRole(USER),validReview,addReview)
  *          404:
  *              description : data doesnt found
  */
-router.put("/:id",tokenVerify,checkRole(USER),validReviewEdit,editReview)
+router.put("/:id",tokenVerify,checkRole(USER),formData,validReviewEdit,editReview)
 
 /**
  * @swagger

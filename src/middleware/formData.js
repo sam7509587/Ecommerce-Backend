@@ -5,7 +5,6 @@ exports.formData=(req,res,next)=>{
         if(err){
             return next(new ApiError(400,err.message))
         }else{
-        req.files = req.files || req.file
         req.body = req.body
         if(!req.files){
             return next()

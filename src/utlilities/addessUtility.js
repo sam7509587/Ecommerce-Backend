@@ -1,13 +1,13 @@
-const { userAddress } = require('../models');
+const { address } = require('../models');
 
 exports.addressPresent = async (req) => {
   let addPresent;
   if(req.params.id){
-     addPresent = await userAddress.findOne({
+     addPresent = await address.findOne({
       _id: req.params.id,
     })
   }else{
-    addPresent = await userAddress.findOne({
+    addPresent = await address.findOne({
       userId: req.user.id})
   }
     if(addPresent){

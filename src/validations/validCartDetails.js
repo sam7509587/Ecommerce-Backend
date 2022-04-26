@@ -3,12 +3,15 @@ const { ApiError } = require('../config');
 
 exports.validCartDetails = async (req,res,next) => {
   const data = joi.object({
-    productId: joi.string().trim(),
-    quantity:joi.number()
+    products: joi.array().items(joi.object({
+      quantity: joi.number().min(1).required(),
+      productId:joi.string().hex().length(24).required(),
+    })).required(),
   });
   const validData = await data.validate(req.body);
  if(validData.error){
-     return next(new ApiError(409,validData.error.message))
+  const errorMsg =validData.error.details[0].message.replace(/[^a-zA-Z 0-9 ]/g,"")
+     return next(new ApiError(409,errorMsg))
  }
  else{
      next()

@@ -4,7 +4,8 @@ const reviewSchema = mongoose.Schema({
     productId:{type:mongoose.Schema.Types.ObjectId,ref:"product"},
     userId:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
     rating: Number,
-    comment:String
+    comment:String,
+    images: {type:mongoose.Schema.Types.ObjectId,ref:"image"}
 });
 reviewSchema.set('toJSON', {
     virtuals: true,

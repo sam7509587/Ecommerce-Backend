@@ -19,8 +19,7 @@ const userSchema = mongoose.Schema(
     resetToken: { type: String },
     tokenExp: { type: Date, default: null },
     deletedAt: { type: Boolean, default: null },
-    address: {type: mongoose.Schema.Types.ObjectId,ref:"userAddress"},
-    orders : [{type: mongoose.Schema.Types.ObjectId,ref:"order"}]
+    address: {type: mongoose.Schema.Types.ObjectId,ref:"userAddress"}
   },
   { timestamps: true }
 );
