@@ -1,8 +1,8 @@
 const { order } = require("../models");
 exports.saveOrder=(req)=>{
-    const {addressId,paymentMode,deliveryMode,products,totalPrice} = req.body;
-    const data = new order({userId: req.user.id,totalPrice,
-      products})
+    const {addressId,paymentMode,deliveryMode,products} = req.body;
+    const data = new order({userId: req.user.id,
+      products,addressId})
     if(addressId)  {data.addressId = addressId};
     if(paymentMode) { data.paymentMode};
     if(deliveryMode) { 

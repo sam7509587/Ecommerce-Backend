@@ -1,5 +1,6 @@
 const { User } = require('../models');
 const {template}= require("../templates/mailTemplete")
+const {invoiceMsg}=require("../templates/invoiceMsg")
 const {
   PHONE,
   TWILIO_TOKEN,
@@ -23,6 +24,13 @@ cloudinary.config({
   api_key: API_KEY,
   api_secret: API_SECRET,
   secure: true
+});
+const transport = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: USER_MAIL,
+    pass: USER_PASSWORD,
+  },
 });
 exports.userPresent = async (req) => {
   try {
@@ -79,17 +87,12 @@ exports.sendMail = async (req, token = undefined, msg, role = SELLER) => {
     msgBody = template(greeting,fullName,passedMsg,link)
 
   } else {
-    const link = `<td align="center" style="b-radius: 3px;" bgcolor="#2874f0"><a href="http://127.0.0.1:${PORT}/api/v1/${role}/${token}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; b-radius: 2px; b: 1px solid #2874f0; display: inline-block;">Confirm Email</a></td>`
+    // http://127.0.0.1:${PORT}
+    const link = `<td align="center" style="b-radius: 3px;" bgcolor="#2874f0"><a href="https://helpless-lion-80.loca.lt/api/v1/${role}/${token}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; b-radius: 2px; b: 1px solid #2874f0; display: inline-block;">Confirm Email</a></td>`
     msgBody = template(greeting,fullName,passedMsg,link)
   }
   const email = req.body.email;
-  const transport = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: USER_MAIL,
-      pass: USER_PASSWORD,
-    },
-  });
+
   const mailOptions = {
     from: USER_MAIL,
     to: email,
@@ -102,7 +105,6 @@ exports.sendMail = async (req, token = undefined, msg, role = SELLER) => {
       cid: 'handshake' 
  }]
   };
-  require("../templates/mailTemplete")
   const result = await transport.sendMail(mailOptions, (error, info) => {
     if (error) {
       return 'error';
@@ -112,7 +114,34 @@ exports.sendMail = async (req, token = undefined, msg, role = SELLER) => {
   });
   return result;
 };
-
+exports.sendInvoiceMail = async(data,attachment)=>{
+  const filename =attachment?.split("/Docs/")[1]
+  console.log(filename)
+  const filePath = path.join(__dirname,"../config/pdfInvoice/Docs",filename)
+  const {email:userMail} = data.userId 
+  const details = {
+    id: data.id,
+    userName: data.userId.fullName
+  }
+  const htmlData = invoiceMsg(details)
+  const mailOptions = {
+    from: USER_MAIL,
+    to:userMail ,
+    subject: 'invoice of your order',
+    text: `This is invoice of order`,
+    html:htmlData,
+    attachments: [
+      {path:filePath,filename:filename,contentType:"application/pdf"}]
+  };
+  const result = await transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return error;
+    } else {
+      return info;
+    }
+  });
+  return result;
+}
 exports.generateOtp = () => {
   let Otp = Math.floor(Math.random() * 1000000 + 1);
   return Otp;

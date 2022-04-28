@@ -6,7 +6,7 @@ const {
   generateOtp,
   checkExp,
   verifyEmail,
-  uploadPhoto,deletePhoto
+  uploadPhoto,deletePhoto, sendInvoiceMail
 } = require('./main');
 const { adminData, fieldsToShow, sortByField,searchValues } = require('./adminUtility');
 const { sellerData } = require('./sellerUtility');
@@ -14,6 +14,7 @@ const { UserData } = require('./userUtility');
 const { addressPresent } = require('./addessUtility');
 const { brandCateEdit,productField,deleteImages,filters,createFilter} = require('./productUtility');
 module.exports = {
+  sendInvoiceMail,
   userPresent,
   sendOtp,searchValues,
   sendMail,

@@ -1,5 +1,6 @@
 
 const { USER, ApiError } = require('../config');
+const { User } = require('../models');
 const { createUser, userLogin, updateBody } = require('../services');
 const {
   userPresent,
@@ -26,7 +27,8 @@ exports.registerUser = async (req, res, next) => {
 
 };
 exports.loginUser = async (req, res, next) => {
-  const userAvailable = await userPresent(req);
+  const {email ,phoneNumber} = req.body
+  const userAvailable = await User.findOne({email})
   if(!userAvailable){
     return next(new ApiError(400,"no user found"))
   }

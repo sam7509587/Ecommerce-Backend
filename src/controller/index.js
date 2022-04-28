@@ -15,11 +15,11 @@ const {
 } = require('./addressControl');
 const { addProduct,showProductSeller,editProduct,deleteProduct,showProduct ,deleteSinglePhoto
 ,approveProduct} = require('./productControl');
-const {addReview,deleteReview,editReview}=require("./reviewsControl");
+const {addReview,deleteReview,editReview,getAllreviews,getReview}=require("./reviewsControl");
 const { placeOrder,getAllOrders,getOrder,cancelOrder,changeStatus,fetchDates } = require('./ordercontrol');
 module.exports = {
   login,
-  showSeller,
+  showSeller,getAllreviews,getReview,
   approveSeller,
   loginAdmin,fetchDates,
   registerSelller,

@@ -14,8 +14,7 @@ const orderSchema = mongoose.Schema({
       type: String,
       enum: ["ordered", "packed", "shipped", "delivered","canceled"],
       default: "ordered",
-  },
-  totalPrice: Number
+  }
 });
 orderSchema.set('toJSON', {
   virtuals: true,

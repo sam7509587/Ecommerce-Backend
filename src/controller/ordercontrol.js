@@ -1,6 +1,7 @@
 const { ApiError, createPdf, deliveryStatus, ADMIN } = require("../config");
 const { product, order, User, address, cart } = require("../models");
 const { saveOrder } = require("../services");
+const {  sendInvoiceMail } = require("../utlilities");
 const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.placeOrder = async (req, res, next) => {
@@ -34,12 +35,12 @@ exports.placeOrder = async (req, res, next) => {
         if (!defaultAddress && !addressId) {
             return next(new ApiError(400, "no default address found please provide addressId"))
         }
+        req.body.addressId = defaultAddress.id
         const orederSaved = await saveOrder(req)
-        const pdfData = await order.findOne({ _id: orederSaved }).populate("products.productId").populate("addressId")
-        //     .populate("userId")
-
-        //   await createPdf(pdfData)
-
+        const pdfData = await order.findOne({ _id: orederSaved }).populate("products.productId","productName price description").populate("addressId")
+        .populate("userId")
+        const pdfRoute=  await createPdf(pdfData)
+     await sendInvoiceMail(pdfData,pdfRoute)
         return res.status(201).json({
             statusCode: 200,
             message: "order placed",
@@ -49,7 +50,6 @@ exports.placeOrder = async (req, res, next) => {
         })
     }
     catch (err) {
-        console.log(err)
         return next(new ApiError(400, err.message))
     }
 }

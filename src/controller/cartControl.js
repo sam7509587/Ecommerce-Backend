@@ -19,7 +19,7 @@ exports.
                     return next(new ApiError(400, `no product found with the id ${_id} `))
                 }
                 if (quantity > productFound.quantity) {
-                    return next(new ApiError(406, `We're sorry! Only ${productFound.quantity} unit(s) available in stock`))
+                    return next(new ApiError(406, `We're sorry! Only ${productFound.quantity} unit(s) available in stock for ${productFound.id} product`))
                 }}
                 if (cartFound) {
                     for (i of products) {
@@ -33,7 +33,7 @@ exports.
                     createCart = await addCart.save();
                 }
             return res.status(201).json({
-                statusCode: 200,
+                statusCode: 201,
                 message: "added to cart successfully",
                 data: createCart
             })
@@ -53,14 +53,14 @@ exports.deleteFromCart = async (req, res, next) => {
     }
     const addedCart = await cart.findOne({ userId: req.user.id});
     if (!addedCart) {
-        return next(new ApiError(400, "there is no cart of this user"));
+        return next(new ApiError(400, "there is no cart of user"));
     }
     const found = addedCart.products.find(element => element.id === _id);
     if (!found) {
-        return next(new ApiError(400, "no cart details found with this id"))
+        return next(new ApiError(400, `no cart details found with this id ${_id}`))
     }
     const data = await cart.findOneAndUpdate({ userId: req.user.id }, { $pull: { products: { _id } } }, { new: true })
-    return res.status(200).json({ statusCode: 200, message: "data removed successfull", data })
+    return res.status(200).json({ statusCode: 200, message: "product removed successfull", data })
 }
 exports.incrementDecrement = async (req, res, next) => {
     try {
@@ -72,7 +72,7 @@ exports.incrementDecrement = async (req, res, next) => {
         }
         const found = addedCart.products.find(element => element.id === _id);
         if (!found) {
-            return next(new ApiError(400, "no cart details found with this id"))
+            return next(new ApiError(400, `no cart details found with this id ${_id}`))
         }
         let quantity = found.quantity
         const productPresent = await product.findOne({ _id: found.productId });
@@ -82,7 +82,7 @@ exports.incrementDecrement = async (req, res, next) => {
         if (value === "increment") {
             quantity += 1;
             if (quantity > productPresent.quantity) {
-                return next(new ApiError(406, `We're sorry! Only ${productPresent.quantity} unit(s) allowed in each order`))
+                return next(new ApiError(406, `We're sorry! Only ${productPresent.quantity} unit(s) allowed in each order for ${productPresent.id}`))
             } else {
                 const data = await cart.findOneAndUpdate({ userId: req.user.id, 'products._id': _id }, {
                     '$set': {
@@ -118,14 +118,17 @@ exports.showCart = async (req, res, next) => {
     const allCart = await cart.findOne({ userId: req.user.id }).populate("products.productId","price")
     .limit(limit).skip((page - 1) * limit).sort({ createdBy: -1 })
     let price = 0;
+    if(!allCart){
+        return next(new ApiError(400,"no cart found"))
+    }
     for (i of allCart.products) {
         value = (i.quantity * i.productId.price)
         price += value
     }
   const totalPrice =`total price for ${allCart.length} orders : ${price}`
-    res.json({
+    return res.json({
         statusCode: 200,
-        message: "data found",
+        message: "cart found",
         totalPrice,
         data: allCart
     })

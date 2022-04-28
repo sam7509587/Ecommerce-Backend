@@ -4,7 +4,7 @@ const { swaggerOptions } = require("./swagger")
 const {timeOut,otherRoute}=require("./routeERROR")
 const {upload} =require("./multer")
 const {deliveryStatus,publicRoutes,ADMIN,SELLER,USER,PUBLIC}= require("./env")
-const {createPdf}=require("./pdf")
+const {createPdf}=require("./pdfInvoice/pdf")
 module.exports = {
   PORT: environment("PORT"),
   connectDb: require('./connectdb'),

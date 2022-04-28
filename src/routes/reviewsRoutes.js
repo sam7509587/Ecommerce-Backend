@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { USER } = require("../config");
-const { addReview,deleteReview,editReview } = require("../controller");
+const { addReview,deleteReview,editReview, getAllreviews, getReview } = require("../controller");
 const {tokenVerify,checkRole, formData} =require("../middleware");
 const { validReview, validReviewEdit } = require("../validations");
 
@@ -94,4 +94,6 @@ router.put("/:id",tokenVerify,checkRole(USER),formData,validReviewEdit,editRevie
  *              description : data doesnt found
  */
 router.delete("/:id",tokenVerify,checkRole(USER),deleteReview)
+router.get("/:id",tokenVerify,checkRole(USER),getReview)
+router.get("/",tokenVerify,checkRole(USER),getAllreviews)
 module.exports = router
